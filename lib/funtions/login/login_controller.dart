@@ -39,7 +39,11 @@ class LoginController extends GetxController {
         await sharedPref.setString(Constants.users, user.toString());
         await sharedPref.setBool(Constants.saveUser, cbRemember.value);
         AllBinding().dependencies();
-        Get.offAndToNamed(RoutesConst.home, arguments: user);
+        if (user.type == Constants.typeCustomer) {
+          Get.offAndToNamed(RoutesConst.homeCustomer, arguments: user);
+        } else {
+          Get.offAndToNamed(RoutesConst.home, arguments: user);
+        }
       } else {
         state.value = StateError('Tài khoản hoặc mật khẩu không đúng');
       }

@@ -13,6 +13,7 @@ class Constants {
   static const String typeAccount = 'type';
   static const String typeAdmin = 'admin';
   static const String typeStaff = 'staff';
+  static const String typeCustomer = 'customer';
   static const String isDeleted = 'deleted';
 
   // table product

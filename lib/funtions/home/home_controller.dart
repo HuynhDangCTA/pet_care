@@ -33,6 +33,12 @@ class HomeController extends GetxController {
     const CustomerPage(),
   ];
 
+  List pagesCustomer = [
+    Container(),
+    Container(),
+    Container()
+  ];
+
   @override
   void onInit() async {
     sharedPref = await SharedPreferences.getInstance();
@@ -50,6 +56,7 @@ class HomeController extends GetxController {
   }
 
   List titles = ['Tổng quan', 'Nhân viên', 'Sản phẩm', 'Hóa đơn', 'Khách hàng'];
+  List titleCustomer = ['Sản phẩm', 'Dịch vụ', 'Cá nhân'];
   List titlesStaff = ['Sản phẩm', 'Hóa đơn', 'Khách hàng'];
 
   void changePage(int index) {

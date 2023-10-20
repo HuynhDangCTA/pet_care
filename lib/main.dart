@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             )
           )),
       initialBinding: AllBinding(),
-      initialRoute: RoutesConst.login,
+      initialRoute: RoutesConst.splash,
       getPages: Routes.routes,
       debugShowCheckedModeBanner: false,
       title: 'Chuột Spa',

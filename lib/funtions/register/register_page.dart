@@ -16,46 +16,57 @@ class RegisterPage extends GetView<RegisterController> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Đăng ký'),
+      ),
       resizeToAvoidBottomInset: true,
       backgroundColor: MyColors.backgroundApp,
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.only(left: 25, right: 25),
+          padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
           height: size.height,
           width: size.width,
           child: Stack(children: [
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Image.asset(
-                        'images/logo_rebg.png',
-                        width: 200,
-                        fit: BoxFit.cover,
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      controller.pickImage();
+                    },
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1000),
                       ),
+                      child: Obx(() => ClipRRect(
+                          borderRadius: BorderRadius.circular(1000),
+                          child: controller.image.value)),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
+                  ),
                 ),
-                const Center(
-                    child: AppText(
-                  text: 'ĐĂNG KÝ',
-                  color: MyColors.primaryColor,
-                  isBold: true,
-                  size: 22,
-                )),
                 const SizedBox(
                   height: 20,
                 ),
                 const AppText(
-                  text: 'Tài khoản',
+                  text: 'Họ và tên',
+                  color: MyColors.textColor,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MyTextFormField(
+                  label: '',
+                  controller: controller.fullNameController,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const AppText(
+                  text: 'Số điện thoại đăng nhập',
                   color: MyColors.textColor,
                 ),
                 const SizedBox(
@@ -64,6 +75,7 @@ class RegisterPage extends GetView<RegisterController> {
                 MyTextFormField(
                   label: '',
                   controller: controller.userNameController,
+                  keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(
                   height: 30,
@@ -92,30 +104,54 @@ class RegisterPage extends GetView<RegisterController> {
                   height: 30,
                 ),
                 const AppText(
-                  text: 'Mật khẩu',
+                  text: 'Nhập lại mật khẩu',
                   color: MyColors.textColor,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Obx(() => MyTextFormField(
-                  label: '',
-                  controller: controller.repasswordController,
-                  obscureText: controller.repasswordInVisible.value,
-                  suffixIcon: InkWell(
-                    child: (controller.repasswordInVisible.value)
-                        ? const Icon(Icons.visibility_off)
-                        : const Icon(Icons.visibility),
-                    onTap: () {
-                      controller.changeHideOrShowRePassword();
-                    },
-                  ),
-                )),
+                      label: '',
+                      controller: controller.repasswordController,
+                      obscureText: controller.repasswordInVisible.value,
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value != controller.passwordController.text) {
+                          return 'Mật khẩu nhập lại không đúng';
+                        }
+                        return null;
+                      },
+                      suffixIcon: InkWell(
+                        child: (controller.repasswordInVisible.value)
+                            ? const Icon(Icons.visibility_off)
+                            : const Icon(Icons.visibility),
+                        onTap: () {
+                          controller.changeHideOrShowRePassword();
+                        },
+                      ),
+                    )),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
+                ),
+                const AppText(
+                  text: 'Địa chỉ',
+                  color: MyColors.textColor,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MyTextFormField(
+                  label: '',
+                  controller: controller.addressController,
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 AppButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    await controller.register();
+                  },
                   text: 'Đăng ký',
                   isResponsive: true,
                   fontSize: 18,

@@ -9,6 +9,7 @@ import 'package:pet_care/funtions/product_manager/new_service/new_service_contro
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/warehouse_controller.dart';
 import 'package:pet_care/funtions/register/register_controller.dart';
+import 'package:pet_care/funtions/splash/splash_controller.dart';
 import 'package:pet_care/funtions/staff_manager/new_staff/new_staff_controller.dart';
 import 'package:pet_care/funtions/staff_manager/staff_controller.dart';
 import '../funtions/login/login_controller.dart';
@@ -29,5 +30,6 @@ class AllBinding extends Bindings {
     Get.lazyPut(() => InvoiceController());
     Get.lazyPut(() => NewInvoiceController());
     Get.lazyPut(() => RegisterController());
+    Get.lazyPut(() => SplashController());
   }
 }
