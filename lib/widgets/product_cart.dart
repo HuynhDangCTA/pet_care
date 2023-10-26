@@ -11,12 +11,16 @@ class ProductCart extends StatelessWidget {
   final bool isAdmin;
   final ProductController? controller;
   final Function(Product)? onPick;
+  final bool isCustomer;
+  final Function(Product)? addToCart;
 
   const ProductCart(
       {super.key,
       required this.product,
       this.isAdmin = false,
       this.controller,
+      this.addToCart,
+      this.isCustomer = false,
       this.onPick});
 
   @override
@@ -39,18 +43,21 @@ class ProductCart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
-                padding: const EdgeInsets.all(5),
                 width: size.width,
                 height: 160,
-                child: (product.image != null)
-                    ? Image.network(
-                        product.image!,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.asset(
-                        'images/product_demo.jpg',
-                        fit: BoxFit.contain,
-                      )),
+                child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10)),
+                    child: (product.image != null)
+                        ? Image.network(
+                            product.image!,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(
+                            'images/product_demo.jpg',
+                            fit: BoxFit.contain,
+                          ))),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,8 +77,9 @@ class ProductCart extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                               style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
+                                color: MyColors.primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
                               ),
                             ),
                           ),
@@ -84,38 +92,54 @@ class ProductCart extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              'Số lượng: ${product.amount}',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
+                          (!isCustomer)
+                              ? Expanded(
+                                  child: Text(
+                                    'Số lượng: ${product.amount}',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                     ),
                   ),
+                  (isCustomer)
+                      ? IconButton(
+                          onPressed: () {
+                            addToCart!(product);
+                          },
+                          icon: const Icon(
+                            Icons.add_shopping_cart,
+                            color: MyColors.primaryColor,
+                          ))
+                      : Container(),
                   (isAdmin)
                       ? Column(
                           children: [
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.delete_outline_outlined,
-                                  color: Colors.red,
-                                )),
-                            IconButton(
-                                onPressed: () {
-                                  controller?.editProduct(product);
-                                },
-                                icon: const Icon(
-                                  Icons.mode_edit_outline_outlined,
-                                  color: MyColors.primaryColor,
-                                )),
+                            Expanded(
+                              child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.delete_outline_outlined,
+                                    color: Colors.red,
+                                  )),
+                            ),
+                            Expanded(
+                              child: IconButton(
+                                  onPressed: () {
+                                    controller?.editProduct(product);
+                                  },
+                                  icon: const Icon(
+                                    Icons.mode_edit_outline_outlined,
+                                    color: MyColors.primaryColor,
+                                  )),
+                            ),
                           ],
                         )
                       : Container()

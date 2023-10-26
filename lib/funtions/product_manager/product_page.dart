@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
 import 'package:pet_care/widgets/app_text.dart';
@@ -7,10 +6,7 @@ import 'package:pet_care/widgets/card_control.dart';
 import 'package:pet_care/widgets/product_cart.dart';
 import 'package:pet_care/widgets/search_field.dart';
 import 'package:pet_care/widgets/service_card.dart';
-
-import '../../core/colors.dart';
 import '../../model/state.dart';
-import '../../widgets/empty_data.dart';
 import '../../widgets/loading.dart';
 
 class ProductPage extends GetView<ProductController> {

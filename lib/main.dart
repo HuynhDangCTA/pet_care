@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/core/colors.dart';
 import 'package:pet_care/routes/routes.dart';
-
 import 'bindings/all_binding.dart';
 import 'firebase_options.dart';
 import 'routes/routes_const.dart';

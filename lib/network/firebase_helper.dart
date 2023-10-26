@@ -23,9 +23,9 @@ class FirebaseHelper {
     QuerySnapshot? result = await database
         .collection(Constants.users)
         .where(
-          Constants.username,
-          isEqualTo: user.name,
-        )
+      Constants.username,
+      isEqualTo: user.name,
+    )
         .where(Constants.password, isEqualTo: user.password)
         .get()
         .timeout(timeout);
@@ -35,7 +35,7 @@ class FirebaseHelper {
   static Future<DocumentReference> register(UserResponse data) async {
     debugPrint('data: ${data.toMap()}');
     DocumentReference result =
-        await database.collection(Constants.users).add(data.toMap());
+    await database.collection(Constants.users).add(data.toMap());
     return result;
   }
 
@@ -127,6 +127,16 @@ class FirebaseHelper {
     return database.collection(Constants.customers).get();
   }
 
+  static Future<QuerySnapshot> getTypeProducts() async {
+    return database.collection(Constants.typeProduct).get();
+  }
+
+  static Future<DocumentReference> newTypeProduct(String type) async {
+    return database
+        .collection(Constants.typeProduct)
+        .add({Constants.type: type});
+  }
+
   static Future<DocumentReference> newCustomer(Customer customer) async {
     return database.collection(Constants.customers).add(customer.toMap());
   }
@@ -149,8 +159,8 @@ class FirebaseHelper {
         .update(invoice.toMap());
   }
 
-  static Future<void> newInvoiceProduct(
-      Product product, String invoiceId) async {
+  static Future<void> newInvoiceProduct(Product product,
+      String invoiceId) async {
     return database
         .collection(Constants.invoices)
         .doc(invoiceId)
@@ -159,8 +169,8 @@ class FirebaseHelper {
         .set(product.toMap());
   }
 
-  static Future<DocumentReference> newInvoiceService(
-      ServiceModel serviceModel, String invoiceId) async {
+  static Future<DocumentReference> newInvoiceService(ServiceModel serviceModel,
+      String invoiceId) async {
     return database
         .collection(Constants.invoices)
         .doc(invoiceId)
@@ -189,5 +199,21 @@ class FirebaseHelper {
         .doc(docId)
         .collection(Constants.services)
         .get();
+  }
+
+  static Future<void> addToCart(Product product, String userid) async {
+    return database
+        .collection(Constants.carts)
+        .doc(userid)
+        .collection(Constants.products)
+        .doc(product.id)
+        .set(product.toMap());
+  }
+
+  static Future<DocumentSnapshot> getProductFromCart(String id,
+      String userID) async {
+    return database.collection(Constants.carts)
+        .doc(userID).collection(Constants.products)
+        .doc(id).get();
   }
 }

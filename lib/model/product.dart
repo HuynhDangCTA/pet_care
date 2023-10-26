@@ -8,6 +8,7 @@ class Product {
   int? price;
   int? amount;
   int priceInput;
+  String? type;
 
   Product(
       {this.id,
@@ -16,6 +17,7 @@ class Product {
       this.price,
       this.amount = 0,
       this.image,
+      this.type,
       this.priceInput = 0});
 
   Map<String, dynamic> toMap() {
@@ -24,7 +26,9 @@ class Product {
       Constants.price: price,
       Constants.image: image,
       Constants.amount: amount,
-      Constants.priceInput: priceInput
+      Constants.description: description,
+      Constants.priceInput: priceInput,
+      Constants.type: type
     };
   }
 

@@ -23,6 +23,11 @@ class Constants {
   static const String image = 'image';
   static const String amount = 'amount';
   static const String priceInput = 'priceInput';
+  static const String description = 'description';
+
+//  Type product
+  static const String typeProduct = 'typeProducts';
+  static const String type = 'type';
 
 //  service
   static const String services = 'services';
@@ -53,4 +58,8 @@ class Constants {
   static const String dateCal = 'dateCal';
   static const String selectedOption = 'selectedOption';
   static const String status = 'status';
+
+//  carts
+  static const String carts = 'carts';
+
 }

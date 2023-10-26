@@ -3,10 +3,18 @@ import 'package:pet_care/widgets/app_text.dart';
 
 class MyDropDownButton extends StatefulWidget {
   final List<DropDownItem> items;
+  final String? hintText;
   DropDownItem? value;
   Function(DropDownItem)? onChange;
+  Function? onTapLastItem;
 
-  MyDropDownButton({super.key, required this.items, this.onChange, this.value});
+  MyDropDownButton(
+      {super.key,
+      required this.items,
+      this.hintText,
+      this.onChange,
+      this.value,
+      this.onTapLastItem});
 
   @override
   State<MyDropDownButton> createState() => _MyDropDownButtonState();
@@ -17,7 +25,7 @@ class _MyDropDownButtonState extends State<MyDropDownButton> {
 
   @override
   void initState() {
-    widget.value ??= widget.items[0];
+    // widget.value ??= widget.items[0];
     super.initState();
   }
 
@@ -52,15 +60,22 @@ class _MyDropDownButtonState extends State<MyDropDownButton> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: AppText(
-                      text: '${widget.value?.text}',
+                      text: (widget.value == null)
+                          ? widget.hintText ?? ''
+                          : widget.value!.text,
                       size: 16,
+                      color:
+                          (widget.value == null) ? Colors.grey : Colors.black,
                     ),
                   ),
                   const Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.grey,),
+                      child: Icon(
+                        Icons.arrow_drop_down_circle_outlined,
+                        color: Colors.grey,
+                      ),
                     ),
                   )
                 ],
@@ -69,31 +84,46 @@ class _MyDropDownButtonState extends State<MyDropDownButton> {
           ),
         ),
         (_show == true)
-            ? Container(
-                padding: const EdgeInsets.only(left: 10),
-                color: Colors.white,
-                constraints: const BoxConstraints(
-                  minHeight: 100,
-                  maxHeight: 500,
-                ),
-                child: ListView.builder(
-                  itemCount: widget.items.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: AppText(
-                        text: widget.items[index].text,
-                        size: 16,
-                      ),
-                      onTap: () {
-                        widget.onChange!(widget.items[index]);
-                        setState(() {
-                          widget.value = widget.items[index];
-                          _show = false;
-                        });
+            ? Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    color: Colors.white,
+                    constraints: const BoxConstraints(
+                      minHeight: 100,
+                      // maxHeight: 300,
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: widget.items.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: AppText(
+                            text: widget.items[index].text,
+                            size: 16,
+                          ),
+                          onTap: () {
+                            widget.onChange!(widget.items[index]);
+                            setState(() {
+                              widget.value = widget.items[index];
+                              _show = false;
+                            });
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  (widget.onTapLastItem != null)
+                      ? TextButton(
+                          onPressed: () {
+                            widget.onTapLastItem!();
+                            setState(() {
+                              _show == false;
+                            });
+                          },
+                          child: Text('Thêm mới'))
+                      : Container()
+                ],
               )
             : Container(),
       ],

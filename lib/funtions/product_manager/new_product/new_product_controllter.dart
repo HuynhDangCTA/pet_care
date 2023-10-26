@@ -11,6 +11,9 @@ import 'package:pet_care/util/file_util.dart';
 import 'package:pet_care/util/image_picker_util.dart';
 import 'package:pet_care/util/loading.dart';
 import 'package:pet_care/util/number_util.dart';
+import 'package:pet_care/widgets/app_button.dart';
+import 'package:pet_care/widgets/dropdown.dart';
+import 'package:pet_care/widgets/text_form_field.dart';
 
 import '../../../core/constants.dart';
 import '../../../model/state.dart';
@@ -20,6 +23,7 @@ import '../../../widgets/card_control.dart';
 class NewProductController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   Rx<File?> imageFile = Rx(null);
   Rx<AppState> state = Rx(StateSuccess());
@@ -27,10 +31,12 @@ class NewProductController extends GetxController {
   Rx<Image?> image = Rx(null);
 
   RxList products = [].obs;
+  RxList<DropDownItem> typeProducts = <DropDownItem>[].obs;
+  Rx<DropDownItem?> valueTypeProduct = Rx(null);
   Product? product = Get.arguments;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     if (product != null) {
       nameController.text = product!.name!;
@@ -42,6 +48,45 @@ class NewProductController extends GetxController {
         fit: BoxFit.cover,
       );
     }
+    await getTypeProducts();
+  }
+
+  Future newTypeProduct() async {
+    TextEditingController nameController = TextEditingController();
+    Get.defaultDialog(
+        title: 'Thêm mới',
+        content: Column(
+          children: [
+            MyTextFormField(
+              label: 'Loại sản phẩm',
+              controller: nameController,
+            ),
+          ],
+        ),
+        actions: [
+          AppButton(
+            onPressed: () async {
+              String name = nameController.text;
+              if (name.isEmpty) {
+                return;
+              }
+              await FirebaseHelper.newTypeProduct(name).then((value) {
+                Get.back();
+                typeProducts.add(DropDownItem(text: name, value: name));
+              });
+            },
+            text: 'Thêm',
+            isShadow: false,
+          ),
+          AppButton(
+            onPressed: () {
+              Get.back();
+            },
+            text: 'Đóng',
+            backgroundColor: Colors.grey,
+            isShadow: false,
+          )
+        ]);
   }
 
   void pickImage() async {
@@ -82,10 +127,11 @@ class NewProductController extends GetxController {
     String name = nameController.text;
     int price = NumberUtil.parseCurrency(priceController.text).toInt();
     String? image = '';
-
-    if (name.isEmpty || price == 0) {
+    String description = descriptionController.text;
+    if (name.isEmpty || price == 0 || description.isEmpty) {
       return;
     }
+    if (valueTypeProduct.value == null) return;
     state.value = StateLoading();
     debugPrint('filepath: ${imageFile.value!.path}');
     if (kIsWeb) {
@@ -100,7 +146,12 @@ class NewProductController extends GetxController {
           'prodcuts/$name*${DateTime.now().millisecondsSinceEpoch}');
     }
 
-    Product product = Product(name: name, price: price, image: image);
+    Product product = Product(
+        name: name,
+        price: price,
+        description: description,
+        image: image,
+        type: valueTypeProduct.value!.value);
 
     await FirebaseHelper.newProduct(product).then((value) {
       state.value = StateSuccess();
@@ -132,6 +183,16 @@ class NewProductController extends GetxController {
         Product(id: product!.id, name: name, price: price, image: image);
     await FirebaseHelper.updateProduct(productUpload).then((value) {
       state.value = StateSuccess();
+    });
+  }
+
+  Future getTypeProducts() async {
+    await FirebaseHelper.getTypeProducts().then((value) {
+      for (var item in value.docs) {
+        var dropdownItem = DropDownItem(
+            text: item[Constants.type], value: item[Constants.type]);
+        typeProducts.add(dropdownItem);
+      }
     });
   }
 

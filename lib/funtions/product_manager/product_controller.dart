@@ -145,11 +145,12 @@ class ProductController extends GetxController {
       title: '',
       content: Container(
         width: Get.width,
-        height: Get.width,
+        // height: Get.width,
         color: Colors.white,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: BarcodeWidget(
-          barcode: Barcode.ean13(),
+          // height: 100,
+          barcode: Barcode.code128(),
           data: product.id!,
         ),
       ),

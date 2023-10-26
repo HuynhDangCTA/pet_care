@@ -24,7 +24,7 @@ class RegisterPage extends GetView<RegisterController> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-          height: size.height,
+          // height: size.height,
           width: size.width,
           child: Stack(children: [
             Column(

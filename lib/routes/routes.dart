@@ -8,6 +8,8 @@ import 'package:pet_care/funtions/invoice/add_product/add_service_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_page.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_page.dart';
+import 'package:pet_care/funtions/product_manager/product_for_customer/product_detail_customer/product_detail_customer_page.dart';
+import 'package:pet_care/funtions/product_manager/product_for_customer/product_for_customer_page.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/warehouse_page.dart';
 import 'package:pet_care/funtions/splash/splash_screen.dart';
 import 'package:pet_care/funtions/staff_manager/new_staff/new_staff_page.dart';
@@ -111,6 +113,16 @@ class Routes {
         name: RoutesConst.homeCustomer,
         page: () => const HomeCustomerPage(),
         transition: Transition.rightToLeft,
-        binding: AllBinding())
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.productForCustomer,
+        page: () => const ProductForCustomerPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.productDetailCustomer,
+        page: () => const ProductDetailCustomerPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
   ];
 }

@@ -1,4 +1,3 @@
-
 class RoutesConst {
   static const splash = '/splash';
   static const login = '/login';
@@ -17,5 +16,6 @@ class RoutesConst {
   static const addProduct = '/addProduct';
   static const addService = '/addService';
   static const homeCustomer = '/homeCustomer';
-
+  static const productForCustomer = '/productForCustomer';
+  static const productDetailCustomer = '/productDetailCustomer';
 }

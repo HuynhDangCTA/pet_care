@@ -50,6 +50,7 @@ dependencies:
   volume_watcher: ^2.0.1
   just_audio: ^0.9.35
   barcode_widget: ^2.0.4
+  uni_links: ^0.5.1
 
 dev_dependencies:
   flutter_test:

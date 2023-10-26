@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_care/funtions/home/home_controller.dart';
 import 'package:pet_care/funtions/staff_manager/new_staff/new_staff_controller.dart';
+import 'package:pet_care/model/user_request.dart';
 import 'package:pet_care/routes/routes_const.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
@@ -31,7 +33,8 @@ class StaffController extends GetxController {
 
   Future<void> fetchData() async {
     state.value = StateLoading();
-    await FirebaseHelper.getAllStaff('baoson').then((value) {
+    UserRequest user = HomeController.instants.userCurrent!;
+    await FirebaseHelper.getAllStaff(user.name).then((value) {
       state.value = StateSuccess();
       if (value != null && value.docs.length > 0) {
         List<UserResponse> result = [];

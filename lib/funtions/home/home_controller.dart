@@ -7,6 +7,7 @@ import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
+import 'package:pet_care/funtions/product_manager/product_for_customer/product_for_customer_page.dart';
 import 'package:pet_care/funtions/product_manager/product_page.dart';
 import 'package:pet_care/funtions/staff_manager/staff_page.dart';
 import 'package:pet_care/model/user_request.dart';
@@ -14,6 +15,8 @@ import 'package:pet_care/routes/routes_const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeController extends GetxController {
+  static HomeController get instants => Get.find();
+
   RxInt currentPage = 1.obs;
   RxBool isAdmin = false.obs;
   late SharedPreferences sharedPref;
@@ -34,7 +37,7 @@ class HomeController extends GetxController {
   ];
 
   List pagesCustomer = [
-    Container(),
+    const ProductForCustomerPage(),
     Container(),
     Container()
   ];
