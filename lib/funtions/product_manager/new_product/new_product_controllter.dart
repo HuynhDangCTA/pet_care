@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
 import 'package:pet_care/model/product.dart';
+import 'package:pet_care/util/crop_image.dart';
 import 'package:pet_care/util/file_util.dart';
 import 'package:pet_care/util/image_picker_util.dart';
 import 'package:pet_care/util/loading.dart';
@@ -196,23 +198,24 @@ class NewProductController extends GetxController {
     });
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-    Get.find<ProductController>().getAllProducts();
-  }
-
   void clearEditText() {
     nameController.clear();
     priceController.clear();
-    imageFile.value = null;
+    image.value = Image.network(
+      product!.image!,
+      fit: BoxFit.cover,
+    );
   }
 
   Future pickImageFromCamera() async {
     final XFile? imagePick = await picker.pickImage(source: ImageSource.camera);
     if (!kIsWeb) {
       if (imagePick != null) {
-        imageFile.value = File(imagePick!.path);
+        CroppedFile? croppedFile =
+            await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+        }
         if (imageFile.value != null) {
           image.value = Image.file(
             imageFile.value!,
@@ -221,13 +224,19 @@ class NewProductController extends GetxController {
         }
       }
     } else if (kIsWeb) {
-      webImage.value = await imagePick?.readAsBytes();
-      imageFile.value = File(imagePick!.path);
-      if (webImage.value != null) {
-        image.value = Image.memory(
-          webImage.value!,
-          fit: BoxFit.cover,
-        );
+      if (imagePick != null) {
+        CroppedFile? croppedFile =
+            await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+          webImage.value = await croppedFile.readAsBytes();
+        }
+        if (webImage.value != null) {
+          image.value = Image.memory(
+            webImage.value!,
+            fit: BoxFit.cover,
+          );
+        }
       }
     }
   }
@@ -237,7 +246,11 @@ class NewProductController extends GetxController {
         await picker.pickImage(source: ImageSource.gallery);
     if (!kIsWeb) {
       if (imagePick != null) {
-        imageFile.value = File(imagePick!.path);
+        CroppedFile? croppedFile =
+            await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+        }
         if (imageFile.value != null) {
           image.value = Image.file(
             imageFile.value!,
@@ -246,14 +259,27 @@ class NewProductController extends GetxController {
         }
       }
     } else if (kIsWeb) {
-      webImage.value = await imagePick?.readAsBytes();
-      imageFile.value = File(imagePick!.path);
-      if (webImage.value != null) {
-        image.value = Image.memory(
-          webImage.value!,
-          fit: BoxFit.cover,
-        );
+      if (imagePick != null) {
+        CroppedFile? croppedFile =
+            await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+          webImage.value = await croppedFile.readAsBytes();
+        }
+
+        if (webImage.value != null) {
+          image.value = Image.memory(
+            webImage.value!,
+            fit: BoxFit.cover,
+          );
+        }
       }
     }
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    Get.find<ProductController>().getAllProducts();
   }
 }

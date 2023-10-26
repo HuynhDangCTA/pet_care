@@ -16,45 +16,50 @@ class ProductDetailCustomerPage
         title: const Text('Chi tiết sản phẩm'),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(
-                width: Get.width,
-                child: Image.network(controller.product.image!),
+        child: Column(
+          children: [
+            SizedBox(
+              width: Get.width,
+              height: Get.width,
+              child: Image.network(controller.product.image!),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  AppText(
+                    text: controller.product.name ?? '',
+                    color: MyColors.primaryColor,
+                    isBold: true,
+                    size: 20,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  AppText(
+                    text: controller.product.price.toString() ?? '',
+                    size: 16,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  AppText(
+                    text: controller.product.description ?? '',
+                    textAlign: TextAlign.justify,
+                    size: 16,
+                  ),
+                  AppButton(
+                    onPressed: () {},
+                    text: 'Thêm vào giỏ hàng',
+                    isResponsive: true,
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              AppText(
-                text: controller.product.name ?? '',
-                color: MyColors.primaryColor,
-                isBold: true,
-                size: 20,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              AppText(
-                text: controller.product.price.toString() ?? '',
-                size: 16,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              AppText(
-                text: controller.product.description ?? '',
-                textAlign: TextAlign.justify,
-                size: 16,
-              ),
-              AppButton(
-                onPressed: () {},
-                text: 'Thêm vào giỏ hàng',
-                isResponsive: true,
-              )
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );

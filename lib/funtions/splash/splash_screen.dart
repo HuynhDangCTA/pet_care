@@ -10,7 +10,6 @@ class SplashPage extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('build ui');
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

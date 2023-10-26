@@ -51,6 +51,7 @@ dependencies:
   just_audio: ^0.9.35
   barcode_widget: ^2.0.4
   uni_links: ^0.5.1
+  image_cropper: ^5.0.0
 
 dev_dependencies:
   flutter_test:

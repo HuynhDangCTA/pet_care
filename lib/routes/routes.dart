@@ -24,11 +24,11 @@ import '../funtions/register/register_page.dart';
 
 class Routes {
   static final routes = [
-    // GetPage(
-    //     name: '/',
-    //     page: () => const SplashPage(),
-    //     transition: Transition.rightToLeft,
-    //     binding: AllBinding()),
+    GetPage(
+        name: '/',
+        page: () => const SplashPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
     GetPage(
         name: RoutesConst.splash,
         page: () => const SplashPage(),

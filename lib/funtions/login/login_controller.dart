@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/bindings/all_binding.dart';
@@ -21,6 +22,12 @@ class LoginController extends GetxController {
   Rx<AppState> state = Rx<AppState>(StateSuccess());
   late SharedPreferences sharedPref;
 
+  @override
+  void onInit() async {
+    sharedPref = await SharedPreferences.getInstance();
+    super.onInit();
+  }
+
   void changeHideOrShowPassword() {
     passwordInVisible.value = !passwordInVisible.value;
   }
@@ -38,7 +45,6 @@ class LoginController extends GetxController {
         user.type = value.docs[0][Constants.typeAccount];
         await sharedPref.setString(Constants.users, user.toString());
         await sharedPref.setBool(Constants.saveUser, cbRemember.value);
-        AllBinding().dependencies();
         if (user.type == Constants.typeCustomer) {
           Get.offAndToNamed(RoutesConst.homeCustomer, arguments: user);
         } else {
@@ -50,18 +56,15 @@ class LoginController extends GetxController {
     });
   }
 
-  @override
-  void onInit() async {
-    sharedPref = await SharedPreferences.getInstance();
-    super.onInit();
-    String? user = sharedPref.getString(Constants.users);
-    if (user != null) {
-      Get.offAndToNamed(RoutesConst.home);
-    }
-  }
 
   void goToRegister() {
     Get.lazyPut(() => RegisterController());
     Get.toNamed(RoutesConst.register);
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+
   }
 }

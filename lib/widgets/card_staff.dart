@@ -48,8 +48,8 @@ class CardStaff extends StatelessWidget {
                           fit: BoxFit.cover,
                         )),
             ),
-            Container(
-              width: 200,
+            const SizedBox(width: 10,),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,33 +69,35 @@ class CardStaff extends StatelessWidget {
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () {
-                    controller.deleteUser(staff);
-                  },
-                  child: const Icon(
-                    Icons.delete_outline_outlined,
-                    size: 30,
-                    color: Colors.red,
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      controller.deleteUser(staff);
+                    },
+                    child: const Icon(
+                      Icons.delete_outline_outlined,
+                      size: 30,
+                      color: Colors.red,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                InkWell(
-                  onTap: () {
-                    controller.editStaff(staff);
-                  },
-                  child: const Icon(
-                    FontAwesomeIcons.edit,
-                    size: 28,
-                    color: MyColors.primaryColor,
+                  const SizedBox(
+                    width: 8,
                   ),
-                )
-              ],
+                  InkWell(
+                    onTap: () {
+                      controller.editStaff(staff);
+                    },
+                    child: const Icon(
+                      FontAwesomeIcons.edit,
+                      size: 28,
+                      color: MyColors.primaryColor,
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),

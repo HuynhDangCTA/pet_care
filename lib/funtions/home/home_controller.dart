@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_care/bindings/all_binding.dart';
 import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
@@ -63,13 +62,11 @@ class HomeController extends GetxController {
   List titlesStaff = ['Sản phẩm', 'Hóa đơn', 'Khách hàng'];
 
   void changePage(int index) {
-    AllBinding().dependencies();
     currentPage.value = index;
   }
 
   void logout() async {
     sharedPref.remove(Constants.users);
-    AllBinding().dependencies();
     Get.offAndToNamed(RoutesConst.login);
   }
 
