@@ -3,19 +3,18 @@ import 'package:pet_care/core/constants.dart';
 import 'item_warehouse.dart';
 
 class Warehouse {
-  List<ItemWarehouse> proudcts;
-  DateTime timeCreated;
+  List<ItemWarehouse>? proudcts;
+  DateTime? timeCreated;
+  String? image;
+  int? price;
 
-  Warehouse(this.proudcts, this.timeCreated);
+  Warehouse({this.proudcts, this.timeCreated, this.image, this.price});
 
   Map<String, dynamic> toMap() {
-    List<Map<String, dynamic>> productMap = proudcts.map((e) =>
-    {
-      e.product.id!: e.amount
-    }).toList();
     return {
-      Constants.products: productMap,
-      Constants.createdAt: timeCreated
+      Constants.price: price,
+      Constants.createdAt: timeCreated,
+      Constants.image: image
     };
   }
 }

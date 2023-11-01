@@ -8,7 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/model/customer.dart';
 import 'package:pet_care/model/invoice.dart';
+import 'package:pet_care/model/item_warehouse.dart';
 import 'package:pet_care/model/product.dart';
+import 'package:pet_care/model/room.dart';
 import 'package:pet_care/model/service.dart';
 import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/model/user_request.dart';
@@ -23,9 +25,9 @@ class FirebaseHelper {
     QuerySnapshot? result = await database
         .collection(Constants.users)
         .where(
-      Constants.username,
-      isEqualTo: user.name,
-    )
+          Constants.username,
+          isEqualTo: user.name,
+        )
         .where(Constants.password, isEqualTo: user.password)
         .get()
         .timeout(timeout);
@@ -33,9 +35,8 @@ class FirebaseHelper {
   }
 
   static Future<DocumentReference> register(UserResponse data) async {
-    debugPrint('data: ${data.toMap()}');
     DocumentReference result =
-    await database.collection(Constants.users).add(data.toMap());
+        await database.collection(Constants.users).add(data.toMap());
     return result;
   }
 
@@ -94,7 +95,10 @@ class FirebaseHelper {
   }
 
   static Future<QuerySnapshot> getAllProducts() async {
-    return database.collection(Constants.products).get();
+    return database
+        .collection(Constants.products)
+        .orderBy(Constants.sold)
+        .get();
   }
 
   static Future<void> updateProduct(Product product) async {
@@ -102,6 +106,14 @@ class FirebaseHelper {
         .collection(Constants.products)
         .doc(product.id)
         .update(product.toMap());
+  }
+
+  static Future<void> updateProductWarehouse(
+      String id, int amount, int price) async {
+    return database
+        .collection(Constants.products)
+        .doc(id)
+        .update({Constants.amount: amount, Constants.priceInput: price});
   }
 
   static Future<void> updateAmountProduct(String id, int amount) async {
@@ -121,6 +133,15 @@ class FirebaseHelper {
 
   static Future<DocumentReference> newWarehouse(Warehouse warehouse) async {
     return database.collection(Constants.warehouse).add(warehouse.toMap());
+  }
+
+  static Future<DocumentReference> addProductToWarehouse(
+      Product item, String id) async {
+    return database
+        .collection(Constants.warehouse)
+        .doc(id)
+        .collection(Constants.products)
+        .add(item.toMap());
   }
 
   static Future<QuerySnapshot> getAllCustomer() async {
@@ -159,8 +180,8 @@ class FirebaseHelper {
         .update(invoice.toMap());
   }
 
-  static Future<void> newInvoiceProduct(Product product,
-      String invoiceId) async {
+  static Future<void> newInvoiceProduct(
+      Product product, String invoiceId) async {
     return database
         .collection(Constants.invoices)
         .doc(invoiceId)
@@ -169,8 +190,8 @@ class FirebaseHelper {
         .set(product.toMap());
   }
 
-  static Future<DocumentReference> newInvoiceService(ServiceModel serviceModel,
-      String invoiceId) async {
+  static Future<DocumentReference> newInvoiceService(
+      ServiceModel serviceModel, String invoiceId) async {
     return database
         .collection(Constants.invoices)
         .doc(invoiceId)
@@ -203,17 +224,103 @@ class FirebaseHelper {
 
   static Future<void> addToCart(Product product, String userid) async {
     return database
-        .collection(Constants.carts)
+        .collection(Constants.users)
         .doc(userid)
-        .collection(Constants.products)
+        .collection(Constants.carts)
         .doc(product.id)
-        .set(product.toMap());
+        .set({Constants.amount: product.amount});
   }
 
-  static Future<DocumentSnapshot> getProductFromCart(String id,
-      String userID) async {
-    return database.collection(Constants.carts)
-        .doc(userID).collection(Constants.products)
-        .doc(id).get();
+  static Future<DocumentSnapshot> getProductFromCart(String id, String userID) {
+    return database
+        .collection(Constants.users)
+        .doc(userID)
+        .collection(Constants.carts)
+        .doc(id)
+        .get();
+  }
+
+  static Future<QuerySnapshot> getAllProductFromCart(String userID) {
+    return database
+        .collection(Constants.users)
+        .doc(userID)
+        .collection(Constants.carts)
+        .get();
+  }
+
+  static Future<DocumentSnapshot> getProductFromID(String id) {
+    return database.collection(Constants.products).doc(id).get();
+  }
+
+  static Future<DocumentReference> newRoomCat(Room room) {
+    return database.collection(Constants.roomCat).add(room.toMap());
+  }
+
+  static Future<DocumentReference> newRoomDog(Room room) {
+    return database.collection(Constants.roomDog).add(room.toMap());
+  }
+
+  static Future<bool> isExistRoomCat(String name) async {
+    bool isExist = false;
+    await database
+        .collection(Constants.roomCat)
+        .where(Constants.name, isEqualTo: name)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        isExist = true;
+      }
+    });
+    return isExist;
+  }
+
+  static Future<bool> isExistRoomDog(String name) async {
+    bool isExist = false;
+    await database
+        .collection(Constants.roomDog)
+        .where(Constants.name, isEqualTo: name)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        isExist = true;
+      }
+    });
+    return isExist;
+  }
+
+  static Future<QuerySnapshot> getAllRoomCat() async {
+    return database.collection(Constants.roomCat).orderBy(Constants.name).get();
+  }
+
+  static Future<QuerySnapshot> getAllRoomDog() async {
+    return database.collection(Constants.roomDog).orderBy(Constants.name).get();
+  }
+
+  static Future bookRoomCat(Room room) async {
+    return database
+        .collection(Constants.roomCat)
+        .doc(room.id!)
+        .update({Constants.isEmpty: room.isEmpty});
+  }
+
+  static Future checkOutCat(Room room) async {
+    return database
+        .collection(Constants.roomCat)
+        .doc(room.id!)
+        .update({Constants.isEmpty: room.isEmpty});
+  }
+
+  static Future bookRoomDog(Room room) async {
+    return database
+        .collection(Constants.roomDog)
+        .doc(room.id!)
+        .update({Constants.isEmpty: room.isEmpty});
+  }
+
+  static Future checkOutDog(Room room) async {
+    return database
+        .collection(Constants.roomDog)
+        .doc(room.id!)
+        .update({Constants.isEmpty: room.isEmpty});
   }
 }

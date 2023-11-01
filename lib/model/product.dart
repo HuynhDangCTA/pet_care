@@ -9,6 +9,11 @@ class Product {
   int? amount;
   int priceInput;
   String? type;
+  String? unit;
+  bool selected;
+  double? discount;
+  bool deleted;
+  int sold;
 
   Product(
       {this.id,
@@ -16,8 +21,13 @@ class Product {
       this.description,
       this.price,
       this.amount = 0,
+      this.sold = 0,
       this.image,
       this.type,
+      this.deleted = false,
+      this.discount = 0.0,
+      this.unit,
+      this.selected = false,
       this.priceInput = 0});
 
   Map<String, dynamic> toMap() {
@@ -28,6 +38,10 @@ class Product {
       Constants.amount: amount,
       Constants.description: description,
       Constants.priceInput: priceInput,
+      Constants.unit: unit,
+      Constants.sold: sold,
+      Constants.isDeleted: deleted,
+      Constants.discount: discount,
       Constants.type: type
     };
   }
@@ -37,6 +51,13 @@ class Product {
         name: data[Constants.name],
         image: data[Constants.image],
         price: data[Constants.price],
-        amount: data[Constants.amount]);
+        amount: data[Constants.amount],
+        unit: data[Constants.unit],
+        sold: data[Constants.sold],
+        description: data[Constants.description],
+        deleted: data[Constants.isDeleted],
+        discount: data[Constants.discount],
+        type: data[Constants.type],
+        selected: data['selected'] ?? false);
   }
 }

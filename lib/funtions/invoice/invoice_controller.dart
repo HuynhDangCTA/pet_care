@@ -21,10 +21,15 @@ class InvoiceController extends GetxController {
     Get.toNamed(RoutesConst.newInvoice);
   }
 
+
+  void goCustomerPage() {
+    Get.toNamed(RoutesConst.customer);
+  }
+
   Future getAllInvoices() async {
     invoices.clear();
     await FirebaseHelper.getAllInvoice().then((value) {
-      if (value.docs.length > 0) {
+      if (value.docs.isNotEmpty) {
         for (var doc in value.docs) {
           Invoice invoice = Invoice.fromDocument(
               doc.data() as Map<String, dynamic>);

@@ -120,6 +120,7 @@ class NewStaffPage extends GetView<NewStaffController> {
                     height: 20,
                   ),
                   MyDropDownButton(
+                    hintText: 'Loại tài khoản',
                     items: [
                       DropDownItem(value: 'staff', text: 'Nhân viên'),
                       DropDownItem(value: 'admin', text: 'Admin')

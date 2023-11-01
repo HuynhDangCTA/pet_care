@@ -8,6 +8,7 @@ import 'package:pet_care/util/number_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
 import 'package:pet_care/widgets/card_control.dart';
+import 'package:pet_care/widgets/empty_data.dart';
 
 class InvoicePage extends GetView<InvoiceController> {
   const InvoicePage({super.key});
@@ -20,12 +21,23 @@ class InvoicePage extends GetView<InvoiceController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CardControl(
-                image: 'images/invoice.png',
-                text: 'Tạo hóa đơn',
-                onTap: () {
-                  controller.goNewInvoice();
-                }),
+            Row(
+              children: [
+                CardControl(
+                    image: 'images/invoice.png',
+                    text: 'Tạo hóa đơn',
+                    onTap: () {
+                      controller.goNewInvoice();
+                    }),
+                CardControl(
+                  image: 'images/ic_customer.png',
+                  text: 'Khách hàng',
+                  onTap: () {
+                    controller.goCustomerPage();
+                  },
+                ),
+              ],
+            ),
             Obx(() => Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -42,7 +54,7 @@ class InvoicePage extends GetView<InvoiceController> {
               height: 10,
             ),
             Expanded(
-                child: Obx(() => ListView.builder(
+                child: Obx(() => (controller.invoices.isNotEmpty) ? ListView.builder(
                       itemCount: controller.invoices.length,
                       itemBuilder: (context, index) {
                         return Card(
@@ -146,7 +158,7 @@ class InvoicePage extends GetView<InvoiceController> {
                           ),
                         );
                       },
-                    )))
+                    ): Center(child: const EmptyDataWidget())))
           ],
         ),
       ),

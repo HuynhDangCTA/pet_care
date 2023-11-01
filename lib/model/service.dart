@@ -10,16 +10,22 @@ class ServiceModel {
   String? selectedOption;
   DateTime? fromDate;
   DateTime? toDate;
+  double discount;
   double? days;
+  bool isDog;
+  bool isCat;
 
   ServiceModel(
       {this.id,
       this.name,
       this.options,
+      this.isDog = false,
+      this.isCat = false,
       this.image,
       this.decription,
       this.isByDate = false,
       this.selectedOption,
+      this.discount = 0,
       this.fromDate,
       this.toDate,
       this.days});
@@ -29,7 +35,11 @@ class ServiceModel {
       Constants.name: name,
       Constants.options: options,
       Constants.image: image,
-      Constants.byDate: isByDate
+      Constants.discount: discount,
+      Constants.description: decription,
+      Constants.byDate: isByDate,
+      Constants.isDog: isDog,
+      Constants.isCat: isCat
     };
   }
 
@@ -46,16 +56,31 @@ class ServiceModel {
     };
   }
 
+  factory ServiceModel.fromDocumentForInvoice(Map<String, dynamic> data) {
+    return ServiceModel(
+        image: data[Constants.image],
+        name: data[Constants.name],
+        options: data[Constants.options],
+        decription: data[Constants.description],
+        isByDate: data[Constants.byDate],
+        fromDate: data[Constants.startDate].toDate(),
+        toDate: data[Constants.endDate].toDate(),
+        discount: data[Constants.discount],
+        selectedOption: data[Constants.selectedOption],
+        days: data[Constants.dateCal]);
+  }
+
   factory ServiceModel.fromDocument(Map<String, dynamic> data) {
     return ServiceModel(
-      image: data[Constants.image],
-      name: data[Constants.name],
-      options: data[Constants.options],
-      isByDate: data[Constants.byDate],
-      fromDate: data[Constants.startDate].toDate(),
-      toDate: data[Constants.endDate].toDate(),
-      selectedOption: data[Constants.selectedOption],
-      days: data[Constants.dateCal]
-    );
+        image: data[Constants.image],
+        name: data[Constants.name],
+        options: data[Constants.options],
+        decription: data[Constants.description],
+        isByDate: data[Constants.byDate],
+        discount: data[Constants.discount],
+        isDog: data[Constants.isDog] ?? false,
+        isCat: data[Constants.isCat] ?? false,
+        selectedOption: data[Constants.selectedOption],
+        days: data[Constants.dateCal]);
   }
 }

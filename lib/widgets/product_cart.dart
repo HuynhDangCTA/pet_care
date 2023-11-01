@@ -9,8 +9,8 @@ import '../model/product.dart';
 class ProductCart extends StatelessWidget {
   final Product product;
   final bool isAdmin;
-  final ProductController? controller;
-  final Function(Product)? onPick;
+  final Function(Product) onPick;
+  final bool isHot;
   final bool isCustomer;
   final Function(Product)? addToCart;
 
@@ -18,22 +18,17 @@ class ProductCart extends StatelessWidget {
       {super.key,
       required this.product,
       this.isAdmin = false,
-      this.controller,
       this.addToCart,
+      this.isHot = false,
       this.isCustomer = false,
-      this.onPick});
+      required this.onPick});
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        if (onPick != null) {
-          onPick!(product);
-        }
-        if (controller != null) {
-          controller!.showQRCodeProduct(product);
-        }
+        onPick(product);
       },
       child: Card(
         color: Colors.white,
@@ -42,22 +37,65 @@ class ProductCart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
-                width: size.width,
-                height: 160,
-                child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        topLeft: Radius.circular(10)),
-                    child: (product.image != null)
-                        ? Image.network(
-                            product.image!,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.asset(
-                            'images/product_demo.jpg',
-                            fit: BoxFit.contain,
-                          ))),
+            Stack(
+              children: [
+                Container(
+                    width: size.width,
+                    height: 160,
+                    child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            topLeft: Radius.circular(10)),
+                        child: (product.image != null)
+                            ? Image.network(
+                                product.image!,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'images/product_demo.jpg',
+                                fit: BoxFit.contain,
+                              ))),
+                (isHot && product.amount! > 0)
+                    ? Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          height: 70,
+                          width: 70,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(10)),
+                              child: Image.asset('images/hot.png')),
+                        ),
+                      )
+                    : Container(),
+                (product.amount == null || product.amount! <= 0)
+                    ? Container(
+                        width: size.width,
+                        height: 160,
+                        color: Colors.white38,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              topLeft: Radius.circular(10)),
+                          child: Center(
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: Colors.white60,
+                                  borderRadius: BorderRadius.circular(1000)),
+                              child: AppText(
+                                text: 'Hết hàng',
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,9 +170,7 @@ class ProductCart extends StatelessWidget {
                             ),
                             Expanded(
                               child: IconButton(
-                                  onPressed: () {
-                                    controller?.editProduct(product);
-                                  },
+                                  onPressed: () {},
                                   icon: const Icon(
                                     Icons.mode_edit_outline_outlined,
                                     color: MyColors.primaryColor,

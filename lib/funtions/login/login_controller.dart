@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/bindings/all_binding.dart';
@@ -39,15 +38,13 @@ class LoginController extends GetxController {
     UserRequest user = UserRequest(name: name, password: password);
     state.value = StateLoading();
     await FirebaseHelper.login(user).then((value) async {
-      if (value != null && value.docs.length > 0) {
+      if (value != null && value.docs.isNotEmpty) {
         state.value = StateSuccess();
         user.id = value.docs[0].id;
         user.type = value.docs[0][Constants.typeAccount];
         await sharedPref.setString(Constants.users, user.toString());
         await sharedPref.setBool(Constants.saveUser, cbRemember.value);
-        if (user.type == Constants.typeCustomer) {
-          Get.offAndToNamed(RoutesConst.homeCustomer, arguments: user);
-        } else {
+        if (user.type != Constants.typeCustomer) {
           Get.offAndToNamed(RoutesConst.home, arguments: user);
         }
       } else {
@@ -55,7 +52,6 @@ class LoginController extends GetxController {
       }
     });
   }
-
 
   void goToRegister() {
     Get.lazyPut(() => RegisterController());
@@ -65,6 +61,5 @@ class LoginController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-
   }
 }

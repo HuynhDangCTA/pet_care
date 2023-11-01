@@ -9,6 +9,7 @@ class CustomerPage extends GetView<CustomerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Khách hàng'),),
       body: Container(
         padding: EdgeInsets.all(10),
         child: Obx(() => ListView.builder(
@@ -18,7 +19,7 @@ class CustomerPage extends GetView<CustomerController> {
               margin: EdgeInsets.only(bottom: 10),
               child: ListTile(
                 title: AppText(text: controller.customers[index].name),
-                subtitle: AppText(text: '${controller.customers[index].phone}'),
+                subtitle: AppText(text: controller.customers[index].phone),
                 trailing: AppText(text: '${controller.customers[index].times}', textAlign: TextAlign.end,),
               ),
             );

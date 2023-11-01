@@ -26,6 +26,8 @@ class NewProductController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController unitController = TextEditingController();
+
   final ImagePicker picker = ImagePicker();
   Rx<File?> imageFile = Rx(null);
   Rx<AppState> state = Rx(StateSuccess());
@@ -34,7 +36,7 @@ class NewProductController extends GetxController {
 
   RxList products = [].obs;
   RxList<DropDownItem> typeProducts = <DropDownItem>[].obs;
-  Rx<DropDownItem?> valueTypeProduct = Rx(null);
+  Rx<String?> valueTypeProduct = Rx(null);
   Product? product = Get.arguments;
 
   @override
@@ -49,6 +51,9 @@ class NewProductController extends GetxController {
         product!.image!,
         fit: BoxFit.cover,
       );
+      valueTypeProduct.value = product!.type;
+      unitController.text = product!.unit!;
+      descriptionController.text = product!.description!;
     }
     await getTypeProducts();
   }
@@ -93,7 +98,7 @@ class NewProductController extends GetxController {
 
   void pickImage() async {
     await Get.bottomSheet(Container(
-      padding: EdgeInsets.only(bottom: 20, top: 20),
+      padding: const EdgeInsets.only(bottom: 20, top: 20),
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -130,12 +135,13 @@ class NewProductController extends GetxController {
     int price = NumberUtil.parseCurrency(priceController.text).toInt();
     String? image = '';
     String description = descriptionController.text;
-    if (name.isEmpty || price == 0 || description.isEmpty) {
+    String unit = unitController.text;
+    if (name.isEmpty || price == 0 || description.isEmpty || unit.isEmpty) {
       return;
     }
     if (valueTypeProduct.value == null) return;
     state.value = StateLoading();
-    debugPrint('filepath: ${imageFile.value!.path}');
+
     if (kIsWeb) {
       if (webImage.value != null) {
         image = await FirebaseHelper.uploadFileWeb(webImage.value!,
@@ -153,7 +159,8 @@ class NewProductController extends GetxController {
         price: price,
         description: description,
         image: image,
-        type: valueTypeProduct.value!.value);
+        unit: unit,
+        type: valueTypeProduct.value!);
 
     await FirebaseHelper.newProduct(product).then((value) {
       state.value = StateSuccess();
@@ -166,8 +173,13 @@ class NewProductController extends GetxController {
   void editProduct() async {
     state.value = StateLoading();
     String name = nameController.text;
+    String unit = unitController.text;
     int price = NumberUtil.parseCurrency(priceController.text).toInt();
     String? image = product!.image;
+
+    if (name.isEmpty || priceController.text.isEmpty || unit.isEmpty) {
+      return;
+    }
 
     if (kIsWeb) {
       if (webImage.value != null) {
@@ -181,8 +193,8 @@ class NewProductController extends GetxController {
       }
     }
 
-    Product productUpload =
-        Product(id: product!.id, name: name, price: price, image: image);
+    Product productUpload = Product(
+        id: product!.id, name: name, price: price, image: image, unit: unit);
     await FirebaseHelper.updateProduct(productUpload).then((value) {
       state.value = StateSuccess();
     });
@@ -201,6 +213,7 @@ class NewProductController extends GetxController {
   void clearEditText() {
     nameController.clear();
     priceController.clear();
+    descriptionController.clear();
     image.value = Image.network(
       product!.image!,
       fit: BoxFit.cover,

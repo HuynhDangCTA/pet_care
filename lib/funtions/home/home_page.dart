@@ -46,7 +46,7 @@ class HomePage extends GetView<HomeController> {
                         icon: Icon(FontAwesomeIcons.moneyBill),
                         label: 'Hóa đơn'),
                     const BottomNavigationBarItem(
-                        icon: Icon(Icons.people_alt), label: 'Khách hàng'),
+                        icon: Icon(Icons.discount), label: 'Khuyến mãi'),
                   ]
                 : [
                     const BottomNavigationBarItem(
@@ -55,7 +55,7 @@ class HomePage extends GetView<HomeController> {
                         icon: Icon(FontAwesomeIcons.moneyBill),
                         label: 'Hóa đơn'),
                     const BottomNavigationBarItem(
-                        icon: Icon(Icons.people_alt), label: 'Khách hàng'),
+                        icon: Icon(Icons.discount), label: 'Khuyến mãi'),
                   ],
           )),
     );

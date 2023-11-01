@@ -96,7 +96,7 @@ class NewInvoiceController extends GetxController {
     await FirebaseHelper.getAllServiceInInvoice(id).then((value) {
       if (value.docs.isNotEmpty) {
         for (int i = 0; i < value.docs.length; i++) {
-          ServiceModel serviceModel = ServiceModel.fromDocument(
+          ServiceModel serviceModel = ServiceModel.fromDocumentForInvoice(
               value.docs[i].data() as Map<String, dynamic>);
           serviceModel.id = value.docs[i].id;
           selectedServices.add(serviceModel);
@@ -146,11 +146,11 @@ class NewInvoiceController extends GetxController {
   }
 
   void searchProduct(String? name) {
+    productFilter.clear();
     if (name == null || name.isEmpty) {
       productFilter.addAll(products);
       return;
     }
-    productFilter.clear();
     for (var product in products) {
       if (product.name!
           .toLowerCase()
@@ -223,11 +223,13 @@ class NewInvoiceController extends GetxController {
   }
 
   void addProduct() {
+    productFilter.clear();
     productFilter.addAll(products);
     Get.toNamed(RoutesConst.addProduct);
   }
 
   void addService() {
+    servicesFilter.clear();
     servicesFilter.addAll(services);
     Get.toNamed(RoutesConst.addService);
   }

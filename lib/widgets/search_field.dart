@@ -17,7 +17,7 @@ class _SearchFieldState extends State<SearchField> {
       children: [
         Container(
           padding: const EdgeInsets.only(left: 10),
-          height: 58,
+          height: 50,
           alignment: Alignment.topLeft,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),

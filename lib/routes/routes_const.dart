@@ -10,6 +10,7 @@ class RoutesConst {
   static const newProduct = '/newProdcut';
   static const newService = '/newService';
   static const warehouse = '/warehouse';
+  static const productWarehouse = '/productWarehouse';
   static const customer = '/customer';
   static const invoice = '/invoice';
   static const newInvoice = '/newInvoice';
@@ -18,4 +19,11 @@ class RoutesConst {
   static const homeCustomer = '/homeCustomer';
   static const productForCustomer = '/productForCustomer';
   static const productDetailCustomer = '/productDetailCustomer';
+  static const order = '/order';
+  static const cart = '/cart';
+  static const productDetail = '/productDetail';
+  static const discount = '/discount';
+  static const room = '/room';
+  static const roomCat = '/roomCat';
+  static const roomDog = '/roomDog';
 }

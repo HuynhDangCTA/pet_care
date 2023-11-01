@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
+import 'package:pet_care/funtions/discounts/discount_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
 import 'package:pet_care/funtions/product_manager/product_for_customer/product_for_customer_page.dart';
 import 'package:pet_care/funtions/product_manager/product_page.dart';
@@ -26,13 +27,13 @@ class HomeController extends GetxController {
     const StaffPage(),
     const ProductPage(),
     const InvoicePage(),
-    const CustomerPage(),
+    const DiscountPage(),
   ];
 
   List pagesStaff = [
     const ProductPage(),
     const InvoicePage(),
-    const CustomerPage(),
+    const DiscountPage(),
   ];
 
   List pagesCustomer = [
@@ -57,7 +58,7 @@ class HomeController extends GetxController {
     }
   }
 
-  List titles = ['Tổng quan', 'Nhân viên', 'Sản phẩm', 'Hóa đơn', 'Khách hàng'];
+  List titles = ['Tổng quan', 'Nhân viên', 'Sản phẩm', 'Hóa đơn', 'Khuyến mãi'];
   List titleCustomer = ['Sản phẩm', 'Dịch vụ', 'Cá nhân'];
   List titlesStaff = ['Sản phẩm', 'Hóa đơn', 'Khách hàng'];
 

@@ -4,8 +4,8 @@ import 'package:pet_care/widgets/app_text.dart';
 class MyDropDownButton extends StatefulWidget {
   final List<DropDownItem> items;
   final String? hintText;
-  DropDownItem? value;
-  Function(DropDownItem)? onChange;
+  dynamic value;
+  Function(dynamic)? onChange;
   Function? onTapLastItem;
 
   MyDropDownButton(
@@ -62,7 +62,8 @@ class _MyDropDownButtonState extends State<MyDropDownButton> {
                     child: AppText(
                       text: (widget.value == null)
                           ? widget.hintText ?? ''
-                          : widget.value!.text,
+                          : DropDownItem.getTextFromList(
+                              widget.items, widget.value),
                       size: 16,
                       color:
                           (widget.value == null) ? Colors.grey : Colors.black,
@@ -103,9 +104,9 @@ class _MyDropDownButtonState extends State<MyDropDownButton> {
                             size: 16,
                           ),
                           onTap: () {
-                            widget.onChange!(widget.items[index]);
+                            widget.onChange!(widget.items[index].value);
                             setState(() {
-                              widget.value = widget.items[index];
+                              widget.value = widget.items[index].value;
                               _show = false;
                             });
                           },
@@ -136,4 +137,13 @@ class DropDownItem {
   String text;
 
   DropDownItem({this.value, this.text = ''});
+
+  static String getTextFromList(List<DropDownItem> list, dynamic input) {
+    for (var item in list) {
+      if (item.value == input) {
+        return item.text;
+      }
+    }
+    return '';
+  }
 }

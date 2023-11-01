@@ -36,7 +36,7 @@ class StaffController extends GetxController {
     UserRequest user = HomeController.instants.userCurrent!;
     await FirebaseHelper.getAllStaff(user.name).then((value) {
       state.value = StateSuccess();
-      if (value != null && value.docs.length > 0) {
+      if (value != null && value.docs.isNotEmpty) {
         List<UserResponse> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {
@@ -50,7 +50,8 @@ class StaffController extends GetxController {
               isDeleted: doc[Constants.isDeleted],
               avatar: doc[Constants.avt],
               type: doc[Constants.typeAccount]);
-          if (!staff.isDeleted) {
+          debugPrint('staff ${staff.type}');
+          if (!staff.isDeleted && staff.type != Constants.typeCustomer) {
             result.add(staff);
           }
         }

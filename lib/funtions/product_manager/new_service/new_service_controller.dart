@@ -23,11 +23,14 @@ class NewServiceController extends GetxController {
   Rx<Uint8List?> webImage = Rx(Uint8List(8));
   Rx<Image?> image = Rx(null);
   TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   RxList<TextEditingController> optionControllers =
       [TextEditingController()].obs;
   RxList<TextEditingController> priceControllers =
       [TextEditingController()].obs;
   RxBool isByDate = false.obs;
+  RxBool isDog = false.obs;
+  RxBool isCat = false.obs;
 
   void newOption() {
     optionControllers.add(TextEditingController());
@@ -45,7 +48,8 @@ class NewServiceController extends GetxController {
       return;
     }
     String name = nameController.text;
-    if (name.isEmpty) {
+    String description = descriptionController.text;
+    if (name.isEmpty || description.isEmpty) {
       return;
     }
 
@@ -72,7 +76,13 @@ class NewServiceController extends GetxController {
     }
 
     ServiceModel serviceModel = ServiceModel(
-        name: name, options: options, image: image, isByDate: isByDate.value);
+        name: name,
+        options: options,
+        image: image,
+        isByDate: isByDate.value,
+        isDog: isDog.value,
+        isCat: isCat.value,
+        decription: description);
     await FirebaseHelper.newService(serviceModel).then((value) {
       state.value = StateSuccess();
       clearEditText();
@@ -147,7 +157,7 @@ class NewServiceController extends GetxController {
 
   Future pickImageFromGallery() async {
     final XFile? imagePick =
-    await picker.pickImage(source: ImageSource.gallery);
+        await picker.pickImage(source: ImageSource.gallery);
     if (!kIsWeb) {
       if (imagePick != null) {
         imageFile.value = File(imagePick!.path);
@@ -175,5 +185,4 @@ class NewServiceController extends GetxController {
     super.onClose();
     Get.find<ProductController>().getAllService();
   }
-
 }

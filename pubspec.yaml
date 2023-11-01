@@ -52,6 +52,8 @@ dependencies:
   barcode_widget: ^2.0.4
   uni_links: ^0.5.1
   image_cropper: ^5.0.0
+  flutter_add_to_cart_button: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:

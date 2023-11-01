@@ -23,7 +23,10 @@ class Constants {
   static const String image = 'image';
   static const String amount = 'amount';
   static const String priceInput = 'priceInput';
+  static const String unit = 'unit';
+  static const String sold = 'sold';
   static const String description = 'description';
+  static const String discount = 'discount';
 
 //  Type product
   static const String typeProduct = 'typeProducts';
@@ -33,6 +36,8 @@ class Constants {
   static const String services = 'services';
   static const String options = 'options';
   static const String byDate = 'byDate';
+  static const String isDog = 'isDog';
+  static const String isCat = 'isCat';
 
 //  warehouse
   static const String warehouse = 'detailWarehouse';
@@ -61,5 +66,10 @@ class Constants {
 
 //  carts
   static const String carts = 'carts';
+
+  //room
+  static const String roomCat = 'roomCat';
+  static const String roomDog = 'roomDog';
+  static const String isEmpty = 'isEmpty';
 
 }

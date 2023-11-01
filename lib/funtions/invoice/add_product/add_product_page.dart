@@ -85,6 +85,7 @@ class AddProductPage extends GetView<NewInvoiceController> {
                             crossAxisCount: 2, childAspectRatio: 0.65),
                     itemBuilder: (context, index) {
                       return ProductCart(
+                        isHot: (index < 5) ? true: false,
                         product: controller.productFilter[index],
                         isAdmin: false,
                         onPick: (product) {

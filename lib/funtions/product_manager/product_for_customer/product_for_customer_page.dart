@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/funtions/product_manager/product_for_customer/product_for_customer_controller.dart';
-
 import '../../../widgets/product_cart.dart';
 
 class ProductForCustomerPage extends GetView<ProductForCustomerController> {
