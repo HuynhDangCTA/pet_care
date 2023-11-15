@@ -11,7 +11,7 @@ class Customer {
 
   Map<String, dynamic> toMap() {
     return {
-      Constants.name: name,
+      Constants.fullname: name,
       Constants.phone: phone,
       Constants.times: times
     };

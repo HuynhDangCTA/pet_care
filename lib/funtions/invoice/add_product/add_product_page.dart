@@ -20,7 +20,7 @@ class AddProductPage extends GetView<NewInvoiceController> {
         actions: [
           IconButton(onPressed: () {
               controller.scannerQR();
-          }, icon: Icon(Icons.qr_code_scanner))
+          }, icon: const Icon(Icons.qr_code_scanner))
         ],
       ),
       body: Padding(
@@ -53,7 +53,7 @@ class AddProductPage extends GetView<NewInvoiceController> {
                                       .toString(),
                                 )),
                                 trailing: IconButton(
-                                  icon: Icon(Icons.delete_outline_outlined),
+                                  icon: const Icon(Icons.delete_outline_outlined),
                                   onPressed: () {
                                     controller.selectedProduct.removeAt(index);
                                     controller.amountProduct.removeAt(index);
@@ -85,6 +85,7 @@ class AddProductPage extends GetView<NewInvoiceController> {
                             crossAxisCount: 2, childAspectRatio: 0.65),
                     itemBuilder: (context, index) {
                       return ProductCart(
+                        isInvoice: true,
                         isHot: (index < 5) ? true: false,
                         product: controller.productFilter[index],
                         isAdmin: false,

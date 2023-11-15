@@ -19,14 +19,14 @@ class CustomerController extends GetxController {
   Future getAllCustomers() async {
     state.value = StateLoading();
     await FirebaseHelper.getAllCustomer().then((value) {
-      if (value != null && value.docs.length > 0) {
+      if (value.docs.isNotEmpty) {
         List<Customer> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {
           Customer customer = Customer(
               id: doc.id,
               times: doc[Constants.times],
-              name: doc[Constants.name],
+              name: doc[Constants.fullname],
               phone: doc[Constants.phone]);
           result.add(customer);
         }

@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/model/customer.dart';
+import 'package:pet_care/model/discount.dart';
 import 'package:pet_care/model/invoice.dart';
 import 'package:pet_care/model/item_warehouse.dart';
 import 'package:pet_care/model/product.dart';
@@ -14,6 +15,8 @@ import 'package:pet_care/model/room.dart';
 import 'package:pet_care/model/service.dart';
 import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/model/user_request.dart';
+import 'package:pet_care/model/voucher.dart';
+import 'package:pet_care/util/date_util.dart';
 
 import '../model/warehouse.dart';
 
@@ -34,6 +37,20 @@ class FirebaseHelper {
     return result;
   }
 
+  static Future<void> setToken(String token, String userId) async {
+    await database
+        .collection(Constants.users)
+        .doc(userId)
+        .set({Constants.token: token});
+  }
+
+  static Future<void> updateToken(String token, String userId) async {
+    await database
+        .collection(Constants.users)
+        .doc(userId)
+        .update({Constants.token: token});
+  }
+
   static Future<DocumentReference> register(UserResponse data) async {
     DocumentReference result =
         await database.collection(Constants.users).add(data.toMap());
@@ -49,11 +66,8 @@ class FirebaseHelper {
     return result;
   }
 
-  static Future<void> editUser(UserResponse data) async {
-    return await database
-        .collection(Constants.users)
-        .doc(data.id)
-        .update(data.toMap());
+  static Future<void> editUser(String id, Map<String, dynamic> data) async {
+    return await database.collection(Constants.users).doc(id).update(data);
   }
 
   static Future<void> deletedUser(UserResponse data) async {
@@ -101,11 +115,9 @@ class FirebaseHelper {
         .get();
   }
 
-  static Future<void> updateProduct(Product product) async {
-    return database
-        .collection(Constants.products)
-        .doc(product.id)
-        .update(product.toMap());
+  static Future<void> updateProduct(
+      String id, Map<String, dynamic> data) async {
+    return database.collection(Constants.products).doc(id).update(data);
   }
 
   static Future<void> updateProductWarehouse(
@@ -158,7 +170,7 @@ class FirebaseHelper {
         .add({Constants.type: type});
   }
 
-  static Future<DocumentReference> newCustomer(Customer customer) async {
+  static Future<DocumentReference> newCustomer(UserResponse customer) async {
     return database.collection(Constants.customers).add(customer.toMap());
   }
 
@@ -200,8 +212,13 @@ class FirebaseHelper {
   }
 
   static Future<QuerySnapshot> getAllInvoice() async {
+    DateTime now = DateTime.now();
+    DateTime previous = now.subtract(const Duration(days: 1));
+    previous = DateTime(previous.year, previous.month, previous.day, 23, 59);
+    debugPrint('ngày trước $previous');
     return database
         .collection(Constants.invoices)
+        .where(Constants.createdAt, isGreaterThanOrEqualTo: previous)
         .orderBy(Constants.createdAt, descending: true)
         .get();
   }
@@ -322,5 +339,98 @@ class FirebaseHelper {
         .collection(Constants.roomDog)
         .doc(room.id!)
         .update({Constants.isEmpty: room.isEmpty});
+  }
+
+  static Future<bool> checkDiscount(
+      DateTime fromDate, String? productId) async {
+    bool result = false;
+    await database
+        .collection(Constants.discounts)
+        .where(Constants.toDate, isGreaterThanOrEqualTo: fromDate)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        Discount? discount;
+        for (var doc in value.docs) {
+          discount = Discount.fromMap(doc.data());
+          if (fromDate.isBefore(discount.fromDate!)) {
+            discount = null;
+          }
+
+          if (discount != null) {
+            if (productId == null) {
+              result = true;
+              break;
+            }
+            if (discount.isAllProduct!) {
+              result = true;
+              break;
+            } else {
+              if (discount.productId!.contains(productId)) {
+                result = true;
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        result = false;
+      }
+    });
+    return result;
+  }
+
+  static Future<DocumentReference> newDiscount(Discount discount) async {
+    return database.collection(Constants.discounts).add(discount.toMap());
+  }
+
+  static Future<QuerySnapshot> getDiscountInDate(DateTime date) async {
+    return database
+        .collection(Constants.discounts)
+        .where(Constants.toDate, isGreaterThanOrEqualTo: date)
+        .get();
+  }
+
+  static Future<QuerySnapshot> getDiscount() async {
+    return database
+        .collection(Constants.discounts)
+        .orderBy(Constants.toDate, descending: true)
+        .limit(10)
+        .get();
+  }
+
+  static Future<DocumentReference> newVoucher(Voucher voucher) async {
+    return database.collection(Constants.vouchers).add(voucher.toMap());
+  }
+
+  static void listenVoucher(
+      {required Function(Voucher) addEvent,
+      required Function(Voucher) modifyEvent}) async {
+    database
+        .collection(Constants.vouchers)
+        .orderBy(Constants.fromDate, descending: true)
+        .snapshots()
+        .listen((event) {
+      for (var change in event.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          if (change.doc.exists) {
+            print('Đã thêm: ${change.doc.data()}');
+            Voucher voucher = Voucher.fromMap(change.doc.data()!);
+            voucher.id = change.doc.id;
+            addEvent(voucher);
+          }
+        }
+        if (change.type == DocumentChangeType.modified) {
+          print('Đã sửa đổi: ${change.doc.data()}');
+          Voucher voucher = Voucher.fromMap(change.doc.data()!);
+          voucher.id = change.doc.id;
+          modifyEvent(voucher);
+        }
+        if (change.type == DocumentChangeType.removed) {
+          // Dữ liệu bị xóa
+          print('Đã xóa: ${change.doc.data()}');
+        }
+      }
+    });
   }
 }

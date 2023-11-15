@@ -11,12 +11,12 @@ class CustomerPage extends GetView<CustomerController> {
     return Scaffold(
       appBar: AppBar(title: const Text('Khách hàng'),),
       body: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Obx(() => ListView.builder(
           itemCount: controller.customers.length,
           itemBuilder: (context, index) {
             return Card(
-              margin: EdgeInsets.only(bottom: 10),
+              margin: const EdgeInsets.only(bottom: 10),
               child: ListTile(
                 title: AppText(text: controller.customers[index].name),
                 subtitle: AppText(text: controller.customers[index].phone),

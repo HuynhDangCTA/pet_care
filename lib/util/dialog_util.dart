@@ -15,11 +15,17 @@ class DialogUtil {
   }
 
   static void showLoading() {
-    Get.defaultDialog(
-      backgroundColor: Colors.transparent,
-      content: const LoadingWidget(),
+    Get.dialog(
+      AlertDialog(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          content: WillPopScope(
+              onWillPop: () async {
+                return false;
+              },
+              child: const LoadingWidget())),
       barrierDismissible: false,
-      title: '',
+      barrierColor: Colors.black12,
     );
   }
 

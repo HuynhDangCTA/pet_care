@@ -10,6 +10,7 @@ import 'package:pet_care/funtions/staff_manager/staff_controller.dart';
 import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/model/state.dart';
 import 'package:pet_care/network/firebase_helper.dart';
+import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/util/encode_util.dart';
 import '../../../core/constants.dart';
 import '../../../util/crop_image.dart';
@@ -61,7 +62,7 @@ class NewStaffController extends GetxController {
     String address = addressController.text;
     String? image = '';
     String type =
-        (typeAccount != null) ? typeAccount! : Constants.typeStaff;
+    (typeAccount != null) ? typeAccount! : Constants.typeStaff;
     if (username.isEmpty ||
         password.isEmpty ||
         fullname.isEmpty ||
@@ -109,7 +110,7 @@ class NewStaffController extends GetxController {
     String? image = '';
     String address = addressController.text;
     String type =
-        (typeAccount != null) ? typeAccount! : Constants.typeStaff;
+    (typeAccount != null) ? typeAccount! : Constants.typeStaff;
     if (username.isEmpty ||
         password.isEmpty ||
         fullname.isEmpty ||
@@ -130,25 +131,28 @@ class NewStaffController extends GetxController {
       }
     }
 
-    UserResponse data = UserResponse(
-        id: id,
-        username: username,
-        password: EncodeUtil.generateSHA256(password),
-        name: fullname,
-        phoneNumber: phone,
-        address: address,
-        type: type);
+
+    Map<String, dynamic> data = {
+      Constants.username: username,
+      Constants.password: EncodeUtil.generateSHA256(password),
+      Constants.fullname: fullname,
+      Constants.phone: phone,
+      Constants.address: address,
+      Constants.typeAccount: type
+    };
 
     if (image != null && image.isNotEmpty) {
-      data.avatar = image;
+      data.assign(Constants.image, image);
     }
 
+
     state.value = StateLoading();
-    await FirebaseHelper.editUser(data).then((value) {
+    await FirebaseHelper.editUser(id, data).then((value) {
       state.value = StateSuccess();
-      debugPrint('success update');
+      DialogUtil.showSnackBar('Cập nhật thành công');
     }).catchError((error) {
       debugPrint('error update: ${error.toString()}');
+      DialogUtil.showSnackBar('Cập nhật thất bại');
       state.value = StateError(error.toString());
     });
   }
@@ -196,7 +200,7 @@ class NewStaffController extends GetxController {
     if (!kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-            await CropImage.cropImage(imagePick.path, Get.context!);
+        await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
         }
@@ -210,7 +214,7 @@ class NewStaffController extends GetxController {
     } else if (kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-            await CropImage.cropImage(imagePick.path, Get.context!);
+        await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
           webImage.value = await croppedFile.readAsBytes();
@@ -227,11 +231,11 @@ class NewStaffController extends GetxController {
 
   Future pickImageFromGallery() async {
     final XFile? imagePick =
-        await picker.pickImage(source: ImageSource.gallery);
+    await picker.pickImage(source: ImageSource.gallery);
     if (!kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-            await CropImage.cropImage(imagePick.path, Get.context!);
+        await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
         }
@@ -245,7 +249,7 @@ class NewStaffController extends GetxController {
     } else if (kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-            await CropImage.cropImage(imagePick.path, Get.context!);
+        await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
           webImage.value = await croppedFile.readAsBytes();

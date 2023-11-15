@@ -7,11 +7,13 @@ import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
 import 'package:pet_care/funtions/discounts/discount_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
-import 'package:pet_care/funtions/product_manager/product_for_customer/product_for_customer_page.dart';
 import 'package:pet_care/funtions/product_manager/product_page.dart';
 import 'package:pet_care/funtions/staff_manager/staff_page.dart';
 import 'package:pet_care/model/user_request.dart';
+import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/routes/routes_const.dart';
+import 'package:pet_care/services/fcm_service.dart';
+import 'package:pet_care/util/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeController extends GetxController {
@@ -19,8 +21,7 @@ class HomeController extends GetxController {
 
   RxInt currentPage = 1.obs;
   RxBool isAdmin = false.obs;
-  late SharedPreferences sharedPref;
-  UserRequest? userCurrent;
+  UserResponse? userCurrent;
 
   List pages = [
     const DashBoardPage(),
@@ -36,21 +37,16 @@ class HomeController extends GetxController {
     const DiscountPage(),
   ];
 
-  List pagesCustomer = [
-    const ProductForCustomerPage(),
-    Container(),
-    Container()
-  ];
+
 
   @override
   void onInit() async {
-    sharedPref = await SharedPreferences.getInstance();
     super.onInit();
-    String? userString = sharedPref.getString(Constants.users);
-    debugPrint(userString);
-    UserRequest user = UserRequest.fromMap(json.decode(userString!));
+    UserResponse? user = await SharedPref.getUser();
+    debugPrint('user local home: ${user!.toMap().toString()}');
     userCurrent = user;
-    if (user.type == Constants.typeStaff) {
+    await FCMService.setUpFCM(userCurrent!.id!);
+    if (user!.type == Constants.typeStaff) {
       titles = titlesStaff;
       isAdmin.value = false;
     } else {
@@ -67,17 +63,12 @@ class HomeController extends GetxController {
   }
 
   void logout() async {
-    sharedPref.remove(Constants.users);
+    SharedPref.removeUser();
     Get.offAndToNamed(RoutesConst.login);
   }
 
   @override
   void onClose() {
-    bool? isSave = sharedPref.getBool(Constants.saveUser);
-    if (isSave == null || !isSave) {
-      sharedPref.remove(Constants.users);
-      sharedPref.remove(Constants.saveUser);
-    }
     super.onClose();
   }
 }

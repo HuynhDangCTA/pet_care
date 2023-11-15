@@ -33,8 +33,8 @@ class StaffController extends GetxController {
 
   Future<void> fetchData() async {
     state.value = StateLoading();
-    UserRequest user = HomeController.instants.userCurrent!;
-    await FirebaseHelper.getAllStaff(user.name).then((value) {
+    UserResponse user = HomeController.instants.userCurrent!;
+    await FirebaseHelper.getAllStaff(user.username!).then((value) {
       state.value = StateSuccess();
       if (value != null && value.docs.isNotEmpty) {
         List<UserResponse> result = [];
@@ -62,7 +62,6 @@ class StaffController extends GetxController {
       } else {
         state.value = StateEmptyData();
       }
-
     });
   }
 
@@ -70,7 +69,6 @@ class StaffController extends GetxController {
     Get.lazyPut(() => NewStaffController());
     Get.toNamed(RoutesConst.newStaff, arguments: staff);
   }
-
 
   void deleteUser(UserResponse user) {
     Get.dialog(AlertDialog(
@@ -83,10 +81,9 @@ class StaffController extends GetxController {
       actions: [
         AppButton(
           onPressed: () {
-            FirebaseHelper.deletedUser(user)
-                .then((value) {
-               Get.back();
-               staffs.remove(user);
+            FirebaseHelper.deletedUser(user).then((value) {
+              Get.back();
+              staffs.remove(user);
             });
           },
           text: 'Đồng ý',

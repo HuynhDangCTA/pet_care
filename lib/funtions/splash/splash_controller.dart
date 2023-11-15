@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/routes/routes_const.dart';
+import 'package:pet_care/util/shared_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants.dart';
@@ -24,8 +26,7 @@ class SplashController extends GetxController {
     Future.delayed(
       const Duration(seconds: 2),
       () async {
-        final sharedPref = await SharedPreferences.getInstance();
-        String? user = sharedPref.getString(Constants.users);
+        UserResponse? user = await SharedPref.getUser();
         if (user != null) {
           Get.offAndToNamed(RoutesConst.home);
         } else {

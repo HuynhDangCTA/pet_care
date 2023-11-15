@@ -38,20 +38,18 @@ class StaffPage extends GetView<StaffController> {
                 ),
                 Stack(
                   children: [
-                    Obx(() => Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.staffs.value.length,
-                            itemBuilder: (context, index) {
-                              return CardStaff(
-                                index: index,
-                                staff: controller.staffs[index],
-                                controller: controller,
-                              );
-                            },
-                          ),
-                        )),
+                    Obx(() => ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: controller.staffs.value.length,
+                      itemBuilder: (context, index) {
+                        return CardStaff(
+                          index: index,
+                          staff: controller.staffs[index],
+                          controller: controller,
+                        );
+                      },
+                    )),
                     Center(
                       child: Obx(() => (controller.state.value is StateLoading)
                           ? const LoadingWidget()

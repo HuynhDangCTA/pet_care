@@ -5,6 +5,7 @@ import 'package:pet_care/core/colors.dart';
 import 'package:pet_care/funtions/product_manager/product_detail/product_detail_controller.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 class ProductDetailPage extends GetView<ProductDetailController> {
   const ProductDetailPage({super.key});
@@ -51,20 +52,21 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                 const SizedBox(
                   height: 10,
                 ),
-                AppText(text: controller.product.description ?? '')
+                AppText(text: controller.product.description ?? ''),
+                const SizedBox(
+                  height: 20,
+                ),
+                const AppText(text: 'Mã code:'),
+                const SizedBox(height: 20,),
+                BarcodeWidget(
+                  height: 100,
+                  barcode: Barcode.code128(),
+                  data: controller.product.id!,
+                ),
               ],
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: AppButton(
-          text: 'Thêm vào giỏ hàng',
-          isShadow: false,
-          isResponsive: true,
-          onPressed: () {},
-        ),
       ),
     );
   }

@@ -12,15 +12,21 @@ class ProductCart extends StatelessWidget {
   final Function(Product) onPick;
   final bool isHot;
   final bool isCustomer;
+  final bool isInvoice;
   final Function(Product)? addToCart;
+  final Function(Product product)? editProduct;
+  final Function(Product product)? deleteProduct;
 
   const ProductCart(
       {super.key,
       required this.product,
       this.isAdmin = false,
+      this.deleteProduct,
       this.addToCart,
+      this.isInvoice = false,
       this.isHot = false,
       this.isCustomer = false,
+      this.editProduct,
       required this.onPick});
 
   @override
@@ -39,7 +45,7 @@ class ProductCart extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Container(
+                SizedBox(
                     width: size.width,
                     height: 160,
                     child: ClipRRect(
@@ -59,11 +65,11 @@ class ProductCart extends StatelessWidget {
                     ? Positioned(
                         right: 0,
                         top: 0,
-                        child: Container(
+                        child: SizedBox(
                           height: 70,
                           width: 70,
                           child: ClipRRect(
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(10)),
                               child: Image.asset('images/hot.png')),
                         ),
@@ -86,7 +92,7 @@ class ProductCart extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: Colors.white60,
                                   borderRadius: BorderRadius.circular(1000)),
-                              child: AppText(
+                              child: const AppText(
                                 text: 'Hết hàng',
                               ),
                             ),
@@ -123,13 +129,29 @@ class ProductCart extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              '${NumberUtil.formatCurrency(product.price)}',
-                              style: const TextStyle(
+                              NumberUtil.formatCurrency(product.price),
+                              style: TextStyle(
                                 color: MyColors.primaryColor,
+                                decoration: (product.discount! > 0 && !isInvoice)
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
                                 fontSize: 17,
                               ),
                             ),
                           ),
+                          (product.discount! > 0 && !isInvoice)
+                              ? Expanded(
+                                  child: Text(
+                                    NumberUtil.formatCurrency((product.price! *
+                                        (100 - product.discount!) /
+                                        100)),
+                                    style: const TextStyle(
+                                      color: MyColors.primaryColor,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                           (!isCustomer)
                               ? Expanded(
                                   child: Text(
@@ -162,7 +184,9 @@ class ProductCart extends StatelessWidget {
                           children: [
                             Expanded(
                               child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    deleteProduct!(product);
+                                  },
                                   icon: const Icon(
                                     Icons.delete_outline_outlined,
                                     color: Colors.red,
@@ -170,7 +194,9 @@ class ProductCart extends StatelessWidget {
                             ),
                             Expanded(
                               child: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    editProduct!(product);
+                                  },
                                   icon: const Icon(
                                     Icons.mode_edit_outline_outlined,
                                     color: MyColors.primaryColor,

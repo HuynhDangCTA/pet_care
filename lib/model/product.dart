@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 import '../core/constants.dart';
 
 class Product {
@@ -11,24 +13,23 @@ class Product {
   String? type;
   String? unit;
   bool selected;
-  double? discount;
+  int? discount;
   bool deleted;
   int sold;
 
-  Product(
-      {this.id,
-      this.name,
-      this.description,
-      this.price,
-      this.amount = 0,
-      this.sold = 0,
-      this.image,
-      this.type,
-      this.deleted = false,
-      this.discount = 0.0,
-      this.unit,
-      this.selected = false,
-      this.priceInput = 0});
+  Product({this.id,
+    this.name,
+    this.description,
+    this.price,
+    this.amount = 0,
+    this.sold = 0,
+    this.image,
+    this.type,
+    this.deleted = false,
+    this.discount = 0,
+    this.unit,
+    this.selected = false,
+    this.priceInput = 0});
 
   Map<String, dynamic> toMap() {
     return {
@@ -56,7 +57,7 @@ class Product {
         sold: data[Constants.sold],
         description: data[Constants.description],
         deleted: data[Constants.isDeleted],
-        discount: data[Constants.discount],
+        discount: data[Constants.discount].toInt(),
         type: data[Constants.type],
         selected: data['selected'] ?? false);
   }

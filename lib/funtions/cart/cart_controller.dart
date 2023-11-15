@@ -1,13 +1,12 @@
 import 'package:get/get.dart';
 import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/model/product.dart';
+import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/network/firebase_helper.dart';
-
-import '../../model/user_request.dart';
 import '../home/home_controller.dart';
 
 class CartController extends GetxController {
-  UserRequest user = HomeController.instants.userCurrent!;
+  UserResponse user = HomeController.instants.userCurrent!;
   RxList<Product> products = <Product>[].obs;
 
   Future getAllProduct() async {

@@ -9,9 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
 import 'package:pet_care/model/product.dart';
 import 'package:pet_care/util/crop_image.dart';
+import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/util/file_util.dart';
-import 'package:pet_care/util/image_picker_util.dart';
-import 'package:pet_care/util/loading.dart';
 import 'package:pet_care/util/number_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/dropdown.dart';
@@ -164,9 +163,11 @@ class NewProductController extends GetxController {
 
     await FirebaseHelper.newProduct(product).then((value) {
       state.value = StateSuccess();
+      DialogUtil.showSnackBar('Thêm mới thành công');
       clearEditText();
     }).catchError((error) {
       state.value = StateError(error.toString());
+      DialogUtil.showSnackBar('Thêm mới thất bại');
     });
   }
 
@@ -174,10 +175,15 @@ class NewProductController extends GetxController {
     state.value = StateLoading();
     String name = nameController.text;
     String unit = unitController.text;
+    String description = descriptionController.text;
     int price = NumberUtil.parseCurrency(priceController.text).toInt();
     String? image = product!.image;
 
-    if (name.isEmpty || priceController.text.isEmpty || unit.isEmpty) {
+    if (name.isEmpty ||
+        priceController.text.isEmpty ||
+        unit.isEmpty ||
+        description.isEmpty ||
+        price <= 0) {
       return;
     }
 
@@ -192,11 +198,21 @@ class NewProductController extends GetxController {
             'prodcuts/${FileUtil.getFileNameFromUrl(image!)}');
       }
     }
+    Map<String, dynamic> data = {
+      Constants.name: name,
+      Constants.description: description,
+      Constants.price: price,
+      Constants.unit: unit,
+      Constants.type: valueTypeProduct.value
+    };
 
-    Product productUpload = Product(
-        id: product!.id, name: name, price: price, image: image, unit: unit);
-    await FirebaseHelper.updateProduct(productUpload).then((value) {
+    if (image != null) {
+      data.assign(Constants.image, image);
+    }
+
+    await FirebaseHelper.updateProduct(product!.id!, data).then((value) {
       state.value = StateSuccess();
+      DialogUtil.showSnackBar('Cập nhật thành công');
     });
   }
 

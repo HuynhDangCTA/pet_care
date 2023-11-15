@@ -80,6 +80,12 @@ class ProductPage extends GetView<ProductController> {
                             onPick: (product) {
                               controller.goProductDetail(product);
                             },
+                            editProduct: (product) {
+                              controller.editProduct(product);
+                            },
+                            deleteProduct: (product) {
+                              controller.deleteProduct(product);
+                            },
                           );
                         })
                     : const Center(child: EmptyDataWidget())),
@@ -97,7 +103,7 @@ class ProductPage extends GetView<ProductController> {
               );
             },
           )
-        : Center(child: const EmptyDataWidget()));
+        : const Center(child: EmptyDataWidget()));
 
     return Scaffold(
       body: Stack(
@@ -150,7 +156,7 @@ class ProductPage extends GetView<ProductController> {
                     height: 20,
                   ),
                   Obx(() => MyStepper(
-                          steps: [
+                      steps: [
                             MyStep(
                                 title: 'Sản phẩm',
                                 isActive: (controller.currentStep.value == 0)),

@@ -93,21 +93,6 @@ class LoginPage extends GetView<LoginController> {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  children: [
-                    Obx(() =>
-                        Checkbox(
-                          activeColor: MyColors.primaryColor,
-                          value: controller.cbRemember.value,
-                          onChanged: (value) {
-                            controller.cbRemember.value = value!;
-                          },
-                        )),
-                    const AppText(
-                      text: 'Ghi nhớ đăng nhập',
-                    )
-                  ],
-                ),
                 const SizedBox(
                   height: 20,
                 ),

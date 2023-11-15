@@ -312,8 +312,7 @@ class RoomController extends GetxController {
     await FirebaseHelper.bookRoomCat(roomsCat[index]).then((value) async {
       Get.back();
       DialogUtil.showSnackBar('Đặt thành công');
-      roomsCat.clear();
-      await getAllRoomCat();
+      roomsCat.refresh();
     });
   }
 
@@ -322,8 +321,7 @@ class RoomController extends GetxController {
     await FirebaseHelper.bookRoomDog(roomsDog[index]).then((value) async {
       Get.back();
       DialogUtil.showSnackBar('Đặt thành công');
-      roomsDog.clear();
-      await getAllRoomDog();
+      roomsDog.refresh();
     });
   }
 
@@ -332,8 +330,7 @@ class RoomController extends GetxController {
     await FirebaseHelper.checkOutCat(roomsCat[index]).then((value) async {
       Get.back();
       DialogUtil.showSnackBar('Trả phòng thành công');
-      roomsCat.clear();
-      await getAllRoomCat();
+      roomsCat.refresh();
     });
   }
 
@@ -342,8 +339,7 @@ class RoomController extends GetxController {
     await FirebaseHelper.checkOutDog(roomsDog[index]).then((value) async {
       Get.back();
       DialogUtil.showSnackBar('Trả phòng thành công');
-      roomsDog.clear();
-      await getAllRoomDog();
+      roomsDog.refresh();
     });
   }
 }

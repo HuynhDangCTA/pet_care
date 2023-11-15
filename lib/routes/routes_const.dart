@@ -26,4 +26,7 @@ class RoutesConst {
   static const room = '/room';
   static const roomCat = '/roomCat';
   static const roomDog = '/roomDog';
+  static const newDiscount = '/newDiscount';
+  static const selectProduct = '/selectedProduct';
+  static const newVoucher = '/newVoucher';
 }

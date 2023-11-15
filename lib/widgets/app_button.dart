@@ -8,7 +8,7 @@ class AppButton extends StatelessWidget {
   final double? width;
   final double? height;
   final double? fontSize;
-  final Function onPressed;
+  final Function() onPressed;
   bool? isResponsive;
   final bool isShadow;
   final bool isEnable;

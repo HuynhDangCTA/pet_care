@@ -4,16 +4,15 @@ import 'package:pet_care/funtions/cart/cart_page.dart';
 import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
 import 'package:pet_care/funtions/discounts/discount_page.dart';
-import 'package:pet_care/funtions/home/home_customer_page.dart';
+import 'package:pet_care/funtions/discounts/new_discount/new_discount_page.dart';
+import 'package:pet_care/funtions/discounts/new_discount/select_product_page.dart';
+import 'package:pet_care/funtions/discounts/new_voucher/new_voucher_page.dart';
 import 'package:pet_care/funtions/invoice/add_product/add_product_page.dart';
 import 'package:pet_care/funtions/invoice/add_product/add_service_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_page.dart';
-import 'package:pet_care/funtions/order_customer/order_page.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_page.dart';
 import 'package:pet_care/funtions/product_manager/product_detail/product_detail_page.dart';
-import 'package:pet_care/funtions/product_manager/product_for_customer/product_detail_customer/product_detail_customer_page.dart';
-import 'package:pet_care/funtions/product_manager/product_for_customer/product_for_customer_page.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/new_product_warehouse.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/warehouse_page.dart';
 import 'package:pet_care/funtions/room/new_room_cat/new_room_cat_page.dart';
@@ -118,26 +117,6 @@ class Routes {
         transition: Transition.rightToLeft,
         binding: AllBinding()),
     GetPage(
-        name: RoutesConst.homeCustomer,
-        page: () => const HomeCustomerPage(),
-        transition: Transition.rightToLeft,
-        binding: AllBinding()),
-    GetPage(
-        name: RoutesConst.productForCustomer,
-        page: () => const ProductForCustomerPage(),
-        transition: Transition.rightToLeft,
-        binding: AllBinding()),
-    GetPage(
-        name: RoutesConst.productDetailCustomer,
-        page: () => const ProductDetailCustomerPage(),
-        transition: Transition.rightToLeft,
-        binding: AllBinding()),
-    GetPage(
-        name: RoutesConst.order,
-        page: () => const OrderPage(),
-        transition: Transition.rightToLeft,
-        binding: AllBinding()),
-    GetPage(
         name: RoutesConst.cart,
         page: () => const CartPage(),
         transition: Transition.rightToLeft,
@@ -172,6 +151,20 @@ class Routes {
         page: () => const NewRoomDogPage(),
         transition: Transition.rightToLeft,
         binding: AllBinding()),
-
+    GetPage(
+        name: RoutesConst.newDiscount,
+        page: () => const NewDiscountPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.newVoucher,
+        page: () => const NewVoucherPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.selectProduct,
+        page: () => const SelectProductPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
   ];
 }

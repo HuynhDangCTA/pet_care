@@ -1,22 +1,27 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pet_care/funtions/customer/customer_controller.dart';
 import 'package:pet_care/funtions/home/home_controller.dart';
 import 'package:pet_care/funtions/invoice/invoice_controller.dart';
 import 'package:pet_care/model/customer.dart';
+import 'package:pet_care/model/discount.dart';
 import 'package:pet_care/model/invoice.dart';
 import 'package:pet_care/model/service.dart';
 import 'package:pet_care/model/user_request.dart';
+import 'package:pet_care/model/user_response.dart';
 import 'package:pet_care/util/date_util.dart';
+import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/util/loading.dart';
 import 'package:pet_care/util/number_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
 import 'package:pet_care/widgets/text_form_field.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+
 import 'package:volume_watcher/volume_watcher.dart';
 import '../../../core/constants.dart';
 import '../../../core/payment_methods_charactor.dart';
@@ -61,8 +66,8 @@ class NewInvoiceController extends GetxController {
     super.onInit();
     state.value = StateLoading();
     await getAllCustomers();
-    getAllProduct();
-    getAllService();
+    await getAllProduct();
+    await getAllService();
     if (invoice != null) {
       serviceDiscountController.text = invoice!.discountService.toString();
       productDiscountController.text = invoice!.discountProduct.toString();
@@ -122,7 +127,7 @@ class NewInvoiceController extends GetxController {
           Customer customer = Customer(
               id: doc.id,
               times: doc[Constants.times],
-              name: doc[Constants.name],
+              name: doc[Constants.fullname],
               phone: doc[Constants.phone]);
           result.add(customer);
         }
@@ -183,23 +188,58 @@ class NewInvoiceController extends GetxController {
         List<Product> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {
-          Product product = Product(
-              id: doc.id,
-              name: doc[Constants.name],
-              image: doc[Constants.image],
-              price: doc[Constants.price],
-              amount: doc[Constants.amount]);
-          result.add(product);
+          Product product =
+              Product.fromDocument(doc.data() as Map<String, dynamic>);
+          product.id = doc.id;
+
+          if (!product.deleted && product.amount! > 0) {
+            result.add(product);
+          }
         }
         products = result;
       }
     });
+
+    Discount? discount;
+    await FirebaseHelper.getDiscountInDate(DateTime.now()).then(
+      (value) {
+        if (value.docs.isNotEmpty) {
+          for (var item in value.docs) {
+            discount = Discount.fromMap(item.data() as Map<String, dynamic>);
+            if (DateTime.now().isBefore(discount!.fromDate!)) {
+              discount = null;
+            }
+
+            if (discount != null) {
+              if (discount!.isAllProduct!) {
+                for (var product in products) {
+                  product.discount = discount!.discount!;
+                  product.price =
+                      (product.price! * (100 - discount!.discount!) / 100)
+                          .round();
+                }
+              } else {
+                for (var product in products) {
+                  if (discount!.productId!.contains(product.id)) {
+                    product.discount = discount!.discount!;
+                    product.price =
+                        (product.price! * (100 - discount!.discount!) / 100)
+                            .round();
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+    );
+
     productFilter.addAll(products);
   }
 
   Future getAllService() async {
     await FirebaseHelper.getAllServices().then((value) {
-      if (value != null && value.docs.length > 0) {
+      if (value != null && value.docs.isNotEmpty) {
         List<ServiceModel> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {
@@ -219,6 +259,7 @@ class NewInvoiceController extends GetxController {
 
   void pickCustomer(int index) {
     selectedCustomer.value = customerFilter[index];
+    debugPrint('customer: ${selectedCustomer.value!.times}');
     customerFilter.clear();
   }
 
@@ -270,7 +311,9 @@ class NewInvoiceController extends GetxController {
               String phone = phoneController!.text;
               if (name.isNotEmpty && phone.isNotEmpty) {
                 Customer customer = Customer(name: name, phone: phone);
-                await FirebaseHelper.newCustomer(customer).then((value) {
+                UserResponse user =
+                    UserResponse(name: name, phoneNumber: phone);
+                await FirebaseHelper.newCustomer(user).then((value) {
                   customer.id = value.id;
                   selectedCustomer.value = customer;
                   customers.add(customer);
@@ -618,20 +661,20 @@ class NewInvoiceController extends GetxController {
     if (paymentMethods.value.isEmpty) return;
     if (paymentMethods.value == PaymentMethods.cash &&
         paymentController.text.isEmpty) return;
-
+    DialogUtil.showLoading();
     int discountProduct = int.tryParse(productDiscountController.text) ?? 0;
     int discountService = int.tryParse(serviceDiscountController.text) ?? 0;
     int paymentMoney = calculationCash();
     int totalMoney = calculationTotal();
     DateTime createdAt = DateTime.now();
-    UserRequest user = Get.find<HomeController>().userCurrent!;
+    UserResponse user = Get.find<HomeController>().userCurrent!;
     String staffId = user.id!;
-    String staffName = user.name;
+    String? staffName = user.name;
     String customerId = selectedCustomer.value!.id!;
     String customerName = selectedCustomer.value!.name;
     Invoice invoice = Invoice(
         customerName: customerName,
-        staffName: staffName,
+        staffName: staffName ?? '',
         staffId: staffId,
         customerId: customerId,
         paymentMethod: paymentMethods.value,
@@ -641,14 +684,12 @@ class NewInvoiceController extends GetxController {
         totalMoney: totalMoney,
         createdAt: createdAt);
 
-    Loading.showLoading();
-
     await FirebaseHelper.newInvoice(invoice).then((value) async {
       debugPrint(invoice.toMap().toString());
       if (selectedProduct.isNotEmpty) {
         for (int i = 0; i < selectedProduct.length; i++) {
-          var product = selectedProduct[i];
-          product.amount = amountProduct[i];
+          Product product = Product.fromDocument(selectedProduct[i].toMap());
+          product.id = selectedProduct[i].id;
           await FirebaseHelper.newInvoiceProduct(product, value.id)
               .then((valueProduct) {});
         }
@@ -656,7 +697,9 @@ class NewInvoiceController extends GetxController {
 
       if (selectedServices.isNotEmpty) {
         for (int i = 0; i < selectedServices.length; i++) {
-          var service = selectedServices[i];
+          ServiceModel service =
+              ServiceModel.fromDocument(selectedServices[i].toMap());
+          service.id = selectedProduct[i].id;
           service.fromDate = dateService.value[i][Constants.startDate];
           service.toDate = dateService.value[i][Constants.endDate];
           service.days = dateService.value[i][Constants.dateCal];
@@ -675,13 +718,9 @@ class NewInvoiceController extends GetxController {
     if (selectedServices.isNotEmpty) {
       int times = selectedCustomer.value!.times + 1;
       await FirebaseHelper.updateCustomer(times, selectedCustomer.value!.id!)
-          .then((value) {
-        if (Get.isRegistered<CustomerController>()) {
-          Get.find<CustomerController>().getAllCustomers();
-        }
-      });
+          .then((value) {});
     }
-    Loading.hideLoading();
+    DialogUtil.hideLoading();
     Get.back();
     Get.find<InvoiceController>().getAllInvoices();
   }
@@ -689,58 +728,66 @@ class NewInvoiceController extends GetxController {
   Future updateInvoice() async {}
 
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
   final player = AudioPlayer();
   Barcode? scanData = null;
 
   void scannerQR() {
     Get.defaultDialog(
-      title: '',
+        title: '',
         content: Container(
-      width: Get.width,
-      height: Get.width,
-      child: Column(
-        children: [
-          Expanded(
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: (controller) {
-                this.controller = controller;
-                controller.scannedDataStream.listen((scanData) {
-                      if (scanData.code == null) {
-                        this.scanData = null;
-                      } else {
-                        this.scanData = scanData;
+          width: Get.width,
+          height: Get.width,
+          child: Column(
+            children: [
+              Expanded(
+                child: MobileScanner(
+                  // fit: BoxFit.contain,
+                  controller: MobileScannerController(
+                    detectionSpeed: DetectionSpeed.normal,
+                    formats: [BarcodeFormat.code128],
+                  ),
+                  onDetect: (capture) {
+                    final List<Barcode> barcodes = capture.barcodes;
+                    // final Uint8List? image = capture.image;
+                    for (final barcode in barcodes) {
+                      debugPrint('Barcode found! ${barcode.rawValue}');
+                    }
+                    scanData = barcodes[0];
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              AppButton(
+                onPressed: () async {
+                  if (scanData != null &&
+                      scanData!.rawValue != null &&
+                      scanData!.rawValue!.isNotEmpty) {
+                    for (int i = 0; i < products.length; i++) {
+                      if (products[i].id == scanData!.rawValue!) {
+                        if (selectedProduct.contains(products[i])) {
+                          amountProduct[i] = amountProduct[i] + 1;
+                        } else {
+                          selectedProduct.add(products[i]);
+                          amountProduct.add(1);
+                        }
                       }
+                    }
 
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 10,),
-          AppButton(onPressed: () async {
-            if (scanData != null && scanData!.code != null && scanData!.code!.isNotEmpty) {
-              for (int i = 0; i < products.length; i++) {
-                if (products[i].id == scanData!.code!) {
-                  if (selectedProduct.contains(products[i])) {
-                    amountProduct[i] = amountProduct[i] + 1;
-                  } else {
-                    selectedProduct.add(products[i]);
-                    amountProduct.add(1);
+                    await player.setAsset('assets/audio_scanner.mp3');
+                    await player.setVolume(1);
+                    await player.play();
+                    await player.stop();
                   }
-                }
-              }
-
-              await player.setAsset('assets/audio_scanner.mp3');
-              await player.setVolume(1);
-              await player.play();
-              await player.stop();
-            }
-            scanData = null;
-          }, text: 'Quét', isShadow: false,)
-        ],
-      ),
-    ));
+                  scanData = null;
+                },
+                text: 'Quét',
+                isShadow: false,
+              )
+            ],
+          ),
+        ));
   }
 
   @override

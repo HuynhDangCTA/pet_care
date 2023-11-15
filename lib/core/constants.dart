@@ -1,6 +1,8 @@
 class Constants {
   //Firebase database collection
   static const String saveUser = 'saveUser';
+  static const String token = 'token';
+
   // table users
   static const String id = 'id';
   static const String users = 'users';
@@ -71,5 +73,18 @@ class Constants {
   static const String roomCat = 'roomCat';
   static const String roomDog = 'roomDog';
   static const String isEmpty = 'isEmpty';
+
+//  discount
+  static const String discounts = 'discounts';
+  static const String allProduct = 'allProduct';
+  static const String toDate = 'toDate';
+  static const String fromDate = 'fromDate';
+
+//  voucher
+  static const String vouchers = 'vouchers';
+  static const String code = 'code';
+  static const String condition = 'condition';
+  static const String used = 'used';
+
 
 }

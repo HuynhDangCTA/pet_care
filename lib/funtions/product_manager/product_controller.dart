@@ -8,8 +8,10 @@ import 'package:pet_care/funtions/home/home_controller.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_controllter.dart';
 import 'package:pet_care/funtions/product_manager/new_service/new_service_controller.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/warehouse_controller.dart';
+import 'package:pet_care/model/discount.dart';
 import 'package:pet_care/model/service.dart';
 import 'package:pet_care/routes/routes_const.dart';
+import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
 import 'package:pet_care/widgets/dialog_product_service.dart';
@@ -25,8 +27,6 @@ class ProductController extends GetxController {
   RxList<Product> products = RxList();
   RxList<ServiceModel> services = RxList();
   List<Product> productsGet = [];
-  RxBool isExpandProduct = false.obs;
-  RxBool isExpandService = false.obs;
   RxList<String> typeProducts = <String>[].obs;
   Rx<AppState> state = Rx(StateSuccess());
 
@@ -56,20 +56,19 @@ class ProductController extends GetxController {
   Future getAllProducts() async {
     state.value = StateLoading();
     products.clear();
-    await FirebaseHelper.getAllProducts().then((value) {
+
+    await FirebaseHelper.getAllProducts().then((value) async {
       state.value = StateSuccess();
-      if (value != null && value.docs.length > 0) {
+      if (value.docs.isNotEmpty) {
         List<Product> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {
           Product product =
               Product.fromDocument(doc.data() as Map<String, dynamic>);
           product.id = doc.id;
-          // if (!staff.isDeleted) {
-          //   result.add(staff);
-          // }
-          debugPrint(product.name);
-          result.add(product);
+          if (!product.deleted) {
+            result.add(product);
+          }
         }
         productsGet = result;
         products.addAll(productsGet);
@@ -80,11 +79,43 @@ class ProductController extends GetxController {
         state.value = StateEmptyData();
       }
     });
+
+    Discount? discount;
+    await FirebaseHelper.getDiscountInDate(DateTime.now()).then(
+      (value) {
+        if (value.docs.isNotEmpty) {
+          for (var item in value.docs) {
+            discount = Discount.fromMap(item.data() as Map<String, dynamic>);
+            if (DateTime.now().isBefore(discount!.fromDate!)) {
+              discount = null;
+            }
+
+            if (discount != null) {
+              if (discount!.isAllProduct!) {
+                for (var product in productsGet) {
+                  product.discount = discount!.discount!;
+                }
+                products.clear();
+                products.addAll(productsGet);
+              } else {
+                for (var product in productsGet) {
+                  if (discount!.productId!.contains(product.id)) {
+                    product.discount = discount!.discount!;
+                  }
+                }
+                products.clear();
+                products.addAll(productsGet);
+              }
+            }
+          }
+        }
+      },
+    );
   }
 
   Future getAllService() async {
     await FirebaseHelper.getAllServices().then((value) {
-      if (value != null && value.docs.length > 0) {
+      if (value.docs.isNotEmpty) {
         List<ServiceModel> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {
@@ -220,21 +251,11 @@ class ProductController extends GetxController {
     });
   }
 
-  void showQRCodeProduct(Product product) {
-    Get.defaultDialog(
-      title: '',
-      content: Container(
-        width: Get.width,
-        // height: Get.width,
-        color: Colors.white,
-        padding: const EdgeInsets.all(10),
-        child: BarcodeWidget(
-          // height: 100,
-          barcode: Barcode.code128(),
-          data: product.id!,
-        ),
-      ),
-    );
+  Future deleteProduct(Product product) async {
+    await FirebaseHelper.updateProduct(product.id!, {Constants.isDeleted: true})
+        .then((value) {
+      DialogUtil.showSnackBar('Xóa thành công');
+    });
   }
 
   void changeScreen(value) {
