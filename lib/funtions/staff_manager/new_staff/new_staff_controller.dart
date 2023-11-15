@@ -54,15 +54,14 @@ class NewStaffController extends GetxController {
     Get.find<StaffController>().fetchData();
   }
 
-  void register() async {
+  Future register() async {
     String username = usernameController.text;
     String password = passwordController.text;
     String fullname = fullNameController.text;
     String phone = phoneController.text;
     String address = addressController.text;
     String? image = '';
-    String type =
-    (typeAccount != null) ? typeAccount! : Constants.typeStaff;
+    String type = (typeAccount != null) ? typeAccount! : Constants.typeStaff;
     if (username.isEmpty ||
         password.isEmpty ||
         fullname.isEmpty ||
@@ -95,22 +94,22 @@ class NewStaffController extends GetxController {
         type: type);
     await FirebaseHelper.register(data).then((value) {
       state.value = StateSuccess();
+      DialogUtil.showSnackBar('Thêm mới thành công');
       clearEditText();
     }).catchError((error) {
       state.value = StateError(error.toString());
     });
   }
 
-  void edit() async {
+  Future edit() async {
     String id = staff!.id!;
-    String username = usernameController.text;
-    String password = passwordController.text;
-    String fullname = fullNameController.text;
-    String phone = phoneController.text;
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+    String fullname = fullNameController.text.trim();
+    String phone = phoneController.text.trim();
     String? image = '';
-    String address = addressController.text;
-    String type =
-    (typeAccount != null) ? typeAccount! : Constants.typeStaff;
+    String address = addressController.text.trim();
+    String type = (typeAccount != null) ? typeAccount! : Constants.typeStaff;
     if (username.isEmpty ||
         password.isEmpty ||
         fullname.isEmpty ||
@@ -131,7 +130,6 @@ class NewStaffController extends GetxController {
       }
     }
 
-
     Map<String, dynamic> data = {
       Constants.username: username,
       Constants.password: EncodeUtil.generateSHA256(password),
@@ -145,7 +143,6 @@ class NewStaffController extends GetxController {
       data.assign(Constants.image, image);
     }
 
-
     state.value = StateLoading();
     await FirebaseHelper.editUser(id, data).then((value) {
       state.value = StateSuccess();
@@ -158,11 +155,11 @@ class NewStaffController extends GetxController {
   }
 
   void clearEditText() {
-    usernameController.text = '';
-    passwordController.text = '';
-    fullNameController.text = '';
-    addressController.text = '';
-    phoneController.text = '';
+    usernameController.text = ' ';
+    passwordController.text = ' ';
+    fullNameController.text = ' ';
+    addressController.text = ' ';
+    phoneController.text = ' ';
   }
 
   void pickImage() async {
@@ -200,7 +197,7 @@ class NewStaffController extends GetxController {
     if (!kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-        await CropImage.cropImage(imagePick.path, Get.context!);
+            await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
         }
@@ -214,7 +211,7 @@ class NewStaffController extends GetxController {
     } else if (kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-        await CropImage.cropImage(imagePick.path, Get.context!);
+            await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
           webImage.value = await croppedFile.readAsBytes();
@@ -231,11 +228,11 @@ class NewStaffController extends GetxController {
 
   Future pickImageFromGallery() async {
     final XFile? imagePick =
-    await picker.pickImage(source: ImageSource.gallery);
+        await picker.pickImage(source: ImageSource.gallery);
     if (!kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-        await CropImage.cropImage(imagePick.path, Get.context!);
+            await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
         }
@@ -249,7 +246,7 @@ class NewStaffController extends GetxController {
     } else if (kIsWeb) {
       if (imagePick != null) {
         CroppedFile? croppedFile =
-        await CropImage.cropImage(imagePick.path, Get.context!);
+            await CropImage.cropImage(imagePick.path, Get.context!);
         if (croppedFile != null) {
           imageFile.value = File(croppedFile.path);
           webImage.value = await croppedFile.readAsBytes();

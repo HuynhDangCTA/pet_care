@@ -136,11 +136,11 @@ class NewStaffPage extends GetView<NewStaffController> {
                 height: 30,
               ),
               AppButton(
-                onPressed: () {
+                onPressed: () async {
                   if (!controller.isEdit) {
-                    controller.register();
+                    await controller.register();
                   } else {
-                    controller.edit();
+                    await controller.edit();
                   }
                 },
                 text: 'Thêm',

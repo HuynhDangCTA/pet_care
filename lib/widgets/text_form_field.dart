@@ -85,6 +85,10 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
                   widget.onTap!();
                 }
               },
+              onTapOutside: (event) {
+                FocusScope.of(context).unfocus();
+              },
+
               onChanged: (value) {
                 if (widget.onChange != null) {
                   widget.onChange!(value);
@@ -124,6 +128,7 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
               ),
               cursorColor: Colors.black,
               decoration: InputDecoration(
+
                 suffixIcon: Container(
                   width: 10,
                   height: 10,

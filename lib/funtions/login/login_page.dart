@@ -119,7 +119,7 @@ class LoginPage extends GetView<LoginController> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        controller.goToRegister();
+                        // controller.goToRegister();
                       },
                       child: const AppText(
                         text: 'Đăng ký ngay',
