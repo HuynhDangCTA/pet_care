@@ -16,57 +16,59 @@ class ProductDetailPage extends GetView<ProductDetailController> {
       appBar: AppBar(
         title: const Text('Chi tiết sản phẩm'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(controller.product.image!, width: Get.width),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    AppText(
-                      text: controller.product.name ?? '',
-                      color: MyColors.primaryColor,
-                      size: 20,
-                      isBold: true,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                AppText(
-                  text: controller.product.price.toString() ?? '',
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Divider(),
-                const SizedBox(
-                  height: 10,
-                ),
-                AppText(text: controller.product.description ?? ''),
-                const SizedBox(
-                  height: 20,
-                ),
-                const AppText(text: 'Mã code:'),
-                const SizedBox(height: 20,),
-                BarcodeWidget(
-                  height: 100,
-                  barcode: Barcode.code128(),
-                  data: controller.product.id!,
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(controller.product.image!, width: Get.width),
+            const SizedBox(
+              height: 20,
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      AppText(
+                        text: controller.product.name ?? '',
+                        color: MyColors.primaryColor,
+                        size: 20,
+                        isBold: true,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  AppText(
+                    text: controller.product.price.toString() ?? '',
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Divider(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  AppText(text: controller.product.description ?? ''),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const AppText(text: 'Mã code:'),
+                  const SizedBox(height: 20,),
+                  BarcodeWidget(
+                    height: 100,
+                    barcode: Barcode.code128(),
+                    data: controller.product.id!,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
