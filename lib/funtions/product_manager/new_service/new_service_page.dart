@@ -16,8 +16,8 @@ class NewServicePage extends GetView<NewServiceController> {
       backgroundColor: Colors.white,
       appBar: AppBar(
           title: Text((controller.service == null)
-              ? 'Thêm sản phẩm mới'
-              : 'Chỉnh sửa sản phẩm')),
+              ? 'Thêm dịch vụ mới'
+              : 'Chỉnh sửa dịch vụ')),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
