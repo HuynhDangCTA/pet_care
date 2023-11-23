@@ -60,6 +60,21 @@ class DiscountController extends GetxController {
         }
       }
       vouchers.refresh();
+    }, deletedEvent: (voucher ) {
+      vouchers.remove(voucher);
+    });
+  }
+
+  Future deleteDiscount(Discount discount) async {
+    await FirebaseHelper.deleteDiscount(discount.id!).then((value) {
+      discounts.remove(discount);
+      DialogUtil.showSnackBar('Xóa thành công');
+    });
+  }
+
+  Future deleteVoucher(String id) async {
+    await FirebaseHelper.deleteVoucher(id).then((value) {
+      DialogUtil.showSnackBar('Xóa thành công');
     });
   }
 }

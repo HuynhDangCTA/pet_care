@@ -86,5 +86,13 @@ class Constants {
   static const String condition = 'condition';
   static const String used = 'used';
 
+//  order
+  static const String orders = 'orders';
+  static const String voucherMoney = 'voucherMoney';
+  static const String voucherId = 'voucherId';
+  static const String voucherName = 'voucherName';
+  static const String voucherCode = 'voucherCode';
+  static const String staff = 'staff';
+  static const String ship = 'ship';
 
 }

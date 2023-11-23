@@ -9,6 +9,11 @@ import 'package:pet_care/network/firebase_helper.dart';
 
 class FCMService {
   static FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  static const String key =
+      'AAAAy1ardLo:APA91bEAEeCBAgL6Bbh0gE2skUmc0bO7IsQTNPD3QQnNe2Ak-GuNnOSWxH6ITP0h3wVl4gxa1w_pw_hrwztPGGhEOXFYiMHBXbCUoegJ7BN7LSfXRHLeNx_6Wcl_FluRqSliEMoXqf1M';
+
+
   static const _androidChannel = AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title

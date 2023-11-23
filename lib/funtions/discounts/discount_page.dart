@@ -25,55 +25,70 @@ class DiscountPage extends GetView<DiscountController> {
               return Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: AppText(
-                              text: discount.name ?? '',
-                              isBold: true,
-                              size: 18,
-                              color: MyColors.primaryColor,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AppText(
+                                  text: discount.name ?? '',
+                                  isBold: true,
+                                  size: 18,
+                                  color: MyColors.primaryColor,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                    color: (discount.status == 'Dừng')
+                                        ? Colors.red
+                                        : Colors.green,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: AppText(
+                                  text: discount.status,
+                                  color: Colors.white,
+                                  isBold: true,
+                                ),
+                              )
+                            ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                                color: (discount.status == 'Dừng')
-                                    ? Colors.red
-                                    : Colors.green,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: AppText(
-                              text: discount.status,
-                              color: Colors.white,
-                              isBold: true,
-                            ),
-                          )
+                          (discount.isAllProduct!)
+                              ? const Row(
+                                  children: [
+                                    AppText(text: 'Áp dụng: Tất cả sản phẩm'),
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    AppText(
+                                        text:
+                                            'Áp dụng: ${discount.productId!.length} sản phẩm'),
+                                  ],
+                                ),
+                          AppText(
+                              text:
+                                  'Từ ngày: ${DateTimeUtil.format(discount.fromDate!)}'),
+                          AppText(
+                              text:
+                                  'Đến ngày: ${DateTimeUtil.format(discount.toDate!)}'),
+                          AppText(text: 'Giảm giá: ${discount.discount}%')
                         ],
                       ),
-                      (discount.isAllProduct!)
-                          ? const Row(
-                              children: [
-                                AppText(text: 'Áp dụng: Tất cả sản phẩm'),
-                              ],
-                            )
-                          : Row(
-                              children: [
-                                AppText(
-                                    text:
-                                        'Áp dụng: ${discount.productId!.length} sản phẩm'),
-                              ],
-                            ),
-                      AppText(
-                          text:
-                              'Từ ngày: ${DateTimeUtil.format(discount.fromDate!)}'),
-                      AppText(
-                          text:
-                              'Đến ngày: ${DateTimeUtil.format(discount.toDate!)}'),
-                      AppText(text: 'Giảm giá: ${discount.discount}%')
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                              onPressed: () async {
+                                await controller.deleteDiscount(discount);
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: MyColors.primaryColor,
+                              )))
                     ],
                   ),
                 ),
@@ -93,48 +108,63 @@ class DiscountPage extends GetView<DiscountController> {
               return Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: AppText(
-                              text: voucher.name ?? '',
-                              isBold: true,
-                              size: 18,
-                              color: MyColors.primaryColor,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AppText(
+                                  text: voucher.name ?? '',
+                                  isBold: true,
+                                  size: 18,
+                                  color: MyColors.primaryColor,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                    color: (voucher.used < voucher.amount!)
+                                        ? Colors.green
+                                        : Colors.red,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: AppText(
+                                  text: (voucher.used < voucher.amount!)
+                                      ? 'Còn lại ${voucher.used}/${voucher.amount!}'
+                                      : 'Hết mã',
+                                  color: Colors.white,
+                                  isBold: true,
+                                ),
+                              )
+                            ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                                color: (voucher.used < voucher.amount!)
-                                    ? Colors.green
-                                    : Colors.red,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: AppText(
-                              text: (voucher.used < voucher.amount!)
-                                  ? 'Còn lại ${voucher.used}/${voucher.amount!}'
-                                  : 'Hết mã',
-                              color: Colors.white,
-                              isBold: true,
-                            ),
-                          )
+                          AppText(text: 'Mã: ${voucher.code}'),
+                          AppText(
+                              text:
+                                  'Điều kiện: Hóa đơn >${NumberUtil.formatCurrency(voucher.condition)}'),
+                          AppText(
+                              text:
+                                  'Từ ngày: ${DateTimeUtil.format(voucher.fromDate!)}'),
+                          AppText(
+                              text:
+                                  'Đến ngày: ${DateTimeUtil.format(voucher.toDate!)}'),
+                          AppText(text: 'Giảm giá: ${voucher.discount}%')
                         ],
                       ),
-                      AppText(text: 'Mã: ${voucher.code}'),
-                      AppText(
-                          text:
-                              'Điều kiện: Hóa đơn >${NumberUtil.formatCurrency(voucher.condition)}'),
-                      AppText(
-                          text:
-                              'Từ ngày: ${DateTimeUtil.format(voucher.fromDate!)}'),
-                      AppText(
-                          text:
-                              'Đến ngày: ${DateTimeUtil.format(voucher.toDate!)}'),
-                      AppText(text: 'Giảm giá: ${voucher.discount}%')
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                              onPressed: () {
+                                controller.deleteVoucher(voucher.id!);
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: MyColors.primaryColor,
+                              )))
                     ],
                   ),
                 ),

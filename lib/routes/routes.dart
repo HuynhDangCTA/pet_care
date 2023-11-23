@@ -11,6 +11,7 @@ import 'package:pet_care/funtions/invoice/add_product/add_product_page.dart';
 import 'package:pet_care/funtions/invoice/add_product/add_service_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_page.dart';
+import 'package:pet_care/funtions/order_manager/order_manager_page.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_page.dart';
 import 'package:pet_care/funtions/product_manager/product_detail/product_detail_page.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/new_product_warehouse.dart';
@@ -164,6 +165,11 @@ class Routes {
     GetPage(
         name: RoutesConst.selectProduct,
         page: () => const SelectProductPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.order,
+        page: () => const OrderManagerPage(),
         transition: Transition.rightToLeft,
         binding: AllBinding()),
   ];

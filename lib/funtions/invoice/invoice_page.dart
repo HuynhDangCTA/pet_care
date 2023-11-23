@@ -21,22 +21,32 @@ class InvoicePage extends GetView<InvoiceController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CardControl(
-                    image: 'images/invoice.png',
-                    text: 'Tạo hóa đơn',
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  CardControl(
+                      image: 'images/invoice.png',
+                      text: 'Tạo hóa đơn',
+                      onTap: () {
+                        controller.goNewInvoice();
+                      }),
+                  CardControl(
+                    image: 'images/ic_customer.png',
+                    text: 'Khách hàng',
                     onTap: () {
-                      controller.goNewInvoice();
-                    }),
-                CardControl(
-                  image: 'images/ic_customer.png',
-                  text: 'Khách hàng',
-                  onTap: () {
-                    controller.goCustomerPage();
-                  },
-                ),
-              ],
+                      controller.goCustomerPage();
+                    },
+                  ),
+                  CardControl(
+                    image: 'images/order.png',
+                    text: 'Đơn hàng',
+                    onTap: () {
+                      controller.goOrderPage();
+                    },
+                  ),
+                ],
+              ),
             ),
             Obx(() => Card(
               child: Padding(

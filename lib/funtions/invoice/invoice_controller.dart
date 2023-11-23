@@ -26,6 +26,10 @@ class InvoiceController extends GetxController {
     Get.toNamed(RoutesConst.customer);
   }
 
+  void goOrderPage() {
+    Get.toNamed(RoutesConst.order);
+  }
+
   Future getAllInvoices() async {
     invoices.clear();
     await FirebaseHelper.getAllInvoice().then((value) {

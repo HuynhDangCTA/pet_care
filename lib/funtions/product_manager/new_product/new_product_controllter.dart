@@ -27,7 +27,7 @@ class NewProductController extends GetxController {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController unitController = TextEditingController();
 
-  final ImagePicker picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
   Rx<File?> imageFile = Rx(null);
   Rx<AppState> state = Rx(StateSuccess());
   Rx<Uint8List?> webImage = Rx(Uint8List(8));

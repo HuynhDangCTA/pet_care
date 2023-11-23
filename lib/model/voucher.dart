@@ -10,17 +10,19 @@ class Voucher {
   int used;
   DateTime? toDate;
   DateTime? fromDate;
+  bool isSave;
 
   Voucher(
       {this.id,
-      this.code,
-      this.name,
-      this.discount,
-      this.amount,
-      this.toDate,
-      this.fromDate,
-      this.condition,
-      this.used = 0});
+        this.code,
+        this.name,
+        this.discount,
+        this.amount,
+        this.toDate,
+        this.fromDate,
+        this.isSave = false,
+        this.condition,
+        this.used = 0});
 
   Map<String, dynamic> toMap() {
     return {
@@ -37,14 +39,22 @@ class Voucher {
 
   factory Voucher.fromMap(Map<String, dynamic> data) {
     return Voucher(
-      name: data[Constants.name],
-      code: data[Constants.code],
-      condition: data[Constants.condition],
-      used: data[Constants.used].toInt(),
-      amount: data[Constants.amount].toInt(),
-      discount: data[Constants.discount],
-      toDate: data[Constants.toDate].toDate(),
-      fromDate: data[Constants.fromDate].toDate()
-    );
+        name: data[Constants.name],
+        code: data[Constants.code],
+        condition: data[Constants.condition],
+        used: data[Constants.used].toInt(),
+        amount: data[Constants.amount].toInt(),
+        discount: data[Constants.discount],
+        toDate: data[Constants.toDate].toDate(),
+        fromDate: data[Constants.fromDate].toDate());
   }
+
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Voucher && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

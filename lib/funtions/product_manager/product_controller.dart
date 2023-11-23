@@ -254,6 +254,9 @@ class ProductController extends GetxController {
   Future deleteProduct(Product product) async {
     await FirebaseHelper.updateProduct(product.id!, {Constants.isDeleted: true})
         .then((value) {
+          productsGet.remove(product);
+          products.clear();
+          products.addAll(productsGet);
       DialogUtil.showSnackBar('Xóa thành công');
     });
   }

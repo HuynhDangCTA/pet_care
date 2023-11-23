@@ -8,6 +8,7 @@ import 'package:pet_care/funtions/discounts/new_voucher/new_voucher_controller.d
 import 'package:pet_care/funtions/home/home_controller.dart';
 import 'package:pet_care/funtions/invoice/invoice_controller.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_controller.dart';
+import 'package:pet_care/funtions/order_manager/order_manager_controller.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_controllter.dart';
 import 'package:pet_care/funtions/product_manager/new_service/new_service_controller.dart';
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
@@ -43,5 +44,6 @@ class AllBinding extends Bindings {
     Get.lazyPut(() => RoomController());
     Get.lazyPut(() => NewDiscountController());
     Get.lazyPut(() => NewVoucherController());
+    Get.lazyPut(() => OrderManagerController());
   }
 }

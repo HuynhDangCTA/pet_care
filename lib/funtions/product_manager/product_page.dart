@@ -144,7 +144,7 @@ class ProductPage extends GetView<ProductController> {
                         ),
                         CardControl(
                           image: 'images/ic_room.png',
-                          text: 'Phòng khách sạn',
+                          text: 'Phòng gửi thú cưng',
                           onTap: () {
                             controller.goRoomPage();
                           },

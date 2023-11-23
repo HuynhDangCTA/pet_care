@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -6,10 +7,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pet_care/core/constants.dart';
+import 'package:pet_care/funtions/order_manager/order_status.dart';
 import 'package:pet_care/model/customer.dart';
 import 'package:pet_care/model/discount.dart';
 import 'package:pet_care/model/invoice.dart';
 import 'package:pet_care/model/item_warehouse.dart';
+import 'package:pet_care/model/order_model.dart';
 import 'package:pet_care/model/product.dart';
 import 'package:pet_care/model/room.dart';
 import 'package:pet_care/model/service.dart';
@@ -111,7 +114,7 @@ class FirebaseHelper {
   static Future<QuerySnapshot> getAllProducts() async {
     return database
         .collection(Constants.products)
-        .orderBy(Constants.sold)
+        .orderBy(Constants.sold, descending: true)
         .get();
   }
 
@@ -218,7 +221,7 @@ class FirebaseHelper {
     debugPrint('ngày trước $previous');
     return database
         .collection(Constants.invoices)
-        .where(Constants.createdAt, isGreaterThanOrEqualTo: previous)
+        .where(Constants.createdAt, isGreaterThan: previous)
         .orderBy(Constants.createdAt, descending: true)
         .get();
   }
@@ -405,7 +408,8 @@ class FirebaseHelper {
 
   static void listenVoucher(
       {required Function(Voucher) addEvent,
-      required Function(Voucher) modifyEvent}) async {
+      required Function(Voucher) modifyEvent,
+      required Function(Voucher) deletedEvent}) async {
     database
         .collection(Constants.vouchers)
         .orderBy(Constants.fromDate, descending: true)
@@ -429,8 +433,182 @@ class FirebaseHelper {
         if (change.type == DocumentChangeType.removed) {
           // Dữ liệu bị xóa
           print('Đã xóa: ${change.doc.data()}');
+          Voucher voucher = Voucher.fromMap(change.doc.data()!);
+          voucher.id = change.doc.id;
+          deletedEvent(voucher);
         }
       }
     });
+  }
+
+  static StreamSubscription listenUnFinishOrder(String userId,
+      {required Function(OrderModel order) onAdded,
+      required Function(OrderModel order) onModified,
+      required Function(OrderModel order) onRemoved}) {
+    return database
+        .collection(Constants.orders)
+        .where(Constants.status, whereIn: [
+          OrderStatusConst.dangChuanBiHang,
+          OrderStatusConst.dangGiaoHang
+        ])
+        .orderBy(Constants.createdAt, descending: true)
+        .snapshots()
+        .listen((event) {
+          for (var change in event.docChanges) {
+            if (change.type == DocumentChangeType.added) {
+              OrderModel order =
+                  OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+              order.id = change.doc.id;
+              order.product = [];
+              onAdded(order);
+            } else if (change.type == DocumentChangeType.modified) {
+              OrderModel order =
+                  OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+              order.id = change.doc.id;
+              print('modifed: ${change.doc.data()}');
+              onModified(order);
+            } else if (change.type == DocumentChangeType.removed) {
+              OrderModel order =
+                  OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+              order.id = change.doc.id;
+              onRemoved(order);
+            }
+          }
+        });
+  }
+
+  static StreamSubscription listenFinishOrder(String userId,
+      {required Function(OrderModel order) onAdded,
+      required Function(OrderModel order) onModified,
+      required Function(OrderModel order) onRemoved}) {
+    return database
+        .collection(Constants.orders)
+        .where(Constants.status, whereIn: [
+          OrderStatusConst.giaoHangThanhCong,
+          OrderStatusConst.giaoHangThatBai
+        ])
+        .orderBy(Constants.createdAt, descending: true)
+        .snapshots()
+        .listen((event) {
+          for (var change in event.docChanges) {
+            if (change.type == DocumentChangeType.added) {
+              OrderModel order =
+                  OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+              order.id = change.doc.id;
+              order.product = [];
+              onAdded(order);
+            } else if (change.type == DocumentChangeType.modified) {
+              OrderModel order =
+                  OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+              order.id = change.doc.id;
+              print('modifed: ${change.doc.data()}');
+              onModified(order);
+            } else if (change.type == DocumentChangeType.removed) {
+              OrderModel order =
+                  OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+              order.id = change.doc.id;
+              onRemoved(order);
+            }
+          }
+        });
+  }
+
+  static StreamSubscription listenWaitOrder(String userId,
+      {required Function(OrderModel order) onAdded,
+      required Function(OrderModel order) onModified,
+      required Function(OrderModel order) onRemoved}) {
+    return database
+        .collection(Constants.orders)
+        .where(Constants.status, isEqualTo: OrderStatusConst.choXacNhan)
+        .orderBy(Constants.createdAt, descending: true)
+        .snapshots()
+        .listen((event) {
+      for (var change in event.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          OrderModel order =
+              OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+          order.id = change.doc.id;
+          order.product = [];
+          onAdded(order);
+        } else if (change.type == DocumentChangeType.modified) {
+          OrderModel order =
+              OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+          order.id = change.doc.id;
+          print('modifed: ${change.doc.data()}');
+          onModified(order);
+        } else if (change.type == DocumentChangeType.removed) {
+          OrderModel order =
+              OrderModel.fromMap(change.doc.data() as Map<String, dynamic>);
+          order.id = change.doc.id;
+          onRemoved(order);
+        }
+      }
+    });
+  }
+
+  static Future<QuerySnapshot> getProductFromOrder(String orderid) async {
+    return database
+        .collection(Constants.orders)
+        .doc(orderid)
+        .collection(Constants.products)
+        .get();
+  }
+
+  static Future<QuerySnapshot> getStaffFromOrder(String orderid) async {
+    return database
+        .collection(Constants.orders)
+        .doc(orderid)
+        .collection(Constants.staff)
+        .get();
+  }
+
+  static Future setStaffForOrder(UserResponse user, String orderId) async {
+    return database
+        .collection(Constants.orders)
+        .doc(orderId)
+        .collection(Constants.staff)
+        .doc(user.id)
+        .set(user.toMap());
+  }
+
+  static Future<QuerySnapshot> getCustomerFromOrder(String orderid) async {
+    return database
+        .collection(Constants.orders)
+        .doc(orderid)
+        .collection(Constants.customers)
+        .get();
+  }
+
+  static Future updateStatusOrder(String idOrder, String status) async {
+    return database
+        .collection(Constants.orders)
+        .doc(idOrder)
+        .update({Constants.status: status});
+  }
+
+  static Future updateOrder(String idOrder, Map<String, dynamic> data) async {
+    return database.collection(Constants.orders).doc(idOrder).update(data);
+  }
+
+  static Future<QuerySnapshot> getVoucherFromOrder(String orderid) async {
+    return database
+        .collection(Constants.orders)
+        .doc(orderid)
+        .collection(Constants.vouchers)
+        .get();
+  }
+
+  static Future deleteDiscount(String id) async {
+    await database.collection(Constants.discounts).doc(id).delete();
+  }
+
+  static Future deleteVoucher(String id) async {
+    await database.collection(Constants.vouchers).doc(id).delete();
+  }
+
+  static Future<QuerySnapshot> getAmountCustomer(DateTime fromDate, DateTime toDate) async {
+    return await database.collection(Constants.invoices)
+        .where(Constants.createdAt, isGreaterThan: fromDate)
+        .get();
   }
 }
