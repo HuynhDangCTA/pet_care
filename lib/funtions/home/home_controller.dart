@@ -37,11 +37,8 @@ class HomeController extends GetxController {
     const DiscountPage(),
   ];
 
-
-
   @override
   void onInit() async {
-    super.onInit();
     UserResponse? user = await SharedPref.getUser();
     debugPrint('user local home: ${user!.toMap().toString()}');
     userCurrent = user;
@@ -52,6 +49,7 @@ class HomeController extends GetxController {
     } else {
       isAdmin.value = true;
     }
+    super.onInit();
   }
 
   List titles = ['Tổng quan', 'Nhân viên', 'Sản phẩm', 'Hóa đơn', 'Khuyến mãi'];

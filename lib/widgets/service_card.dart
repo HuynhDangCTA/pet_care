@@ -86,7 +86,7 @@ class ServiceCard extends StatelessWidget {
                   )
                 ],
               ),
-              Positioned(
+              (isAdmin) ? Positioned(
                 bottom: 0,
                 right: 0,
                 child: Row(
@@ -117,7 +117,7 @@ class ServiceCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ) : Container()
             ],
           ),
         ),

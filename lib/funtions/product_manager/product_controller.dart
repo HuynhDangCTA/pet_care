@@ -30,7 +30,7 @@ class ProductController extends GetxController {
   RxList<String> typeProducts = <String>[].obs;
   Rx<AppState> state = Rx(StateSuccess());
 
-  bool isAdmin = HomeController.instants.isAdmin.value;
+  RxBool isAdmin = HomeController.instants.isAdmin;
 
   @override
   void onInit() async {

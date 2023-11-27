@@ -78,7 +78,7 @@ class ProductPage extends GetView<ProductController> {
                           return ProductCart(
                             isHot: (index < 5) ? true : false,
                             product: controller.products.value[index],
-                            isAdmin: controller.isAdmin,
+                            isAdmin: controller.isAdmin.value,
                             onPick: (product) {
                               controller.goProductDetail(product);
                             },
@@ -101,7 +101,7 @@ class ProductPage extends GetView<ProductController> {
             itemCount: controller.services.length,
             itemBuilder: (context, index) {
               return ServiceCard(
-                isAdmin: controller.isAdmin,
+                isAdmin: controller.isAdmin.value,
                 service: controller.services[index],
                 onDeleted: (ServiceModel service) {
                   controller.deleteService(service);
