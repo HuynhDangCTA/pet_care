@@ -98,39 +98,6 @@ class NewServicePage extends GetView<NewServiceController> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const AppText(text: 'Dịch vụ dành cho'),
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          Obx(() => Checkbox(
-                            activeColor: MyColors.primaryColor,
-                            value: controller.isDog.value,
-                            onChanged: (value) {
-                              controller.isDog.value = value!;
-                            },
-                          )),
-                          const AppText(text: 'Cún'),
-                        ],
-                      ),
-                      const SizedBox(width: 20,),
-                      Row(
-                        children: [
-                          Obx(() => Checkbox(
-                            activeColor: MyColors.primaryColor,
-                            value: controller.isCat.value,
-                            onChanged: (value) {
-                              controller.isCat.value = value!;
-                            },
-                          )),
-                          const AppText(text: 'Mèo'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
                   Obx(() => ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -211,10 +178,14 @@ class NewServicePage extends GetView<NewServiceController> {
                 height: 20,
               ),
               AppButton(
-                onPressed: () {
-                  controller.newService();
+                onPressed: () async {
+                  if (controller.service == null) {
+                    await controller.newService();
+                  } else {
+                    await controller.updateService();
+                  }
                 },
-                text: 'Thêm mới',
+                text: (controller.service == null) ? 'Thêm mới' : 'Chỉnh sưa',
                 isResponsive: true,
               )
             ],

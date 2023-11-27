@@ -49,28 +49,28 @@ class DashBoardController extends GetxController {
             var day = invoice.createdAt.day;
             if (day == daysOfWeek[0].day) {
               yValuesCustomer[0] += 1;
-              yValuesDoanhThu[0] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[0] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[1].day) {
               yValuesCustomer[1] += 1;
-              yValuesDoanhThu[1] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[1] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[2].day) {
               yValuesCustomer[2] += 1;
-              yValuesDoanhThu[2] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[2] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[3].day) {
               yValuesCustomer[3] += 1;
-              yValuesDoanhThu[3] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[3] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[4].day) {
               yValuesCustomer[4] += 1;
-              yValuesDoanhThu[4] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[4] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[5].day) {
               yValuesCustomer[5] += 1;
-              yValuesDoanhThu[5] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[5] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[6].day) {
               yValuesCustomer[6] += 1;
-              yValuesDoanhThu[6] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[6] += (invoice.totalMoney).toDouble();
             } else if (day == daysOfWeek[7].day) {
               yValuesCustomer[7] += 1;
-              yValuesDoanhThu[7] += (invoice.paymentMoney).toDouble();
+              yValuesDoanhThu[7] += (invoice.totalMoney).toDouble();
             }
           }
         }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/core/colors.dart';
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
+import 'package:pet_care/model/service.dart';
 import 'package:pet_care/widgets/app_text.dart';
 import 'package:pet_care/widgets/card_control.dart';
 import 'package:pet_care/widgets/empty_data.dart';
@@ -11,6 +12,7 @@ import 'package:pet_care/widgets/service_card.dart';
 import 'package:pet_care/widgets/stepper.dart';
 
 import '../../model/state.dart';
+import '../../routes/routes_const.dart';
 import '../../widgets/loading.dart';
 
 class ProductPage extends GetView<ProductController> {
@@ -76,7 +78,7 @@ class ProductPage extends GetView<ProductController> {
                           return ProductCart(
                             isHot: (index < 5) ? true : false,
                             product: controller.products.value[index],
-                            isAdmin: true,
+                            isAdmin: controller.isAdmin,
                             onPick: (product) {
                               controller.goProductDetail(product);
                             },
@@ -99,7 +101,17 @@ class ProductPage extends GetView<ProductController> {
             itemCount: controller.services.length,
             itemBuilder: (context, index) {
               return ServiceCard(
+                isAdmin: controller.isAdmin,
                 service: controller.services[index],
+                onDeleted: (ServiceModel service) {
+                  controller.deleteService(service);
+                },
+                onPick: (service) {
+                  Get.toNamed(RoutesConst.serviceDetail, arguments: service);
+                },
+                onEdit: (service) {
+                  controller.editService(service);
+                },
               );
             },
           )
@@ -156,7 +168,7 @@ class ProductPage extends GetView<ProductController> {
                     height: 20,
                   ),
                   Obx(() => MyStepper(
-                      steps: [
+                          steps: [
                             MyStep(
                                 title: 'Sản phẩm',
                                 isActive: (controller.currentStep.value == 0)),

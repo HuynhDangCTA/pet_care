@@ -1,4 +1,9 @@
 import 'package:pet_care/core/constants.dart';
+import 'package:pet_care/model/customer.dart';
+import 'package:pet_care/model/service.dart';
+import 'package:pet_care/model/user_response.dart';
+
+import 'product.dart';
 
 class Invoice {
   String? id;
@@ -13,6 +18,10 @@ class Invoice {
   int totalMoney;
   DateTime createdAt;
   String status;
+  List<Product>? products;
+  List<ServiceModel>? services;
+  Customer? customer;
+  UserResponse? staff;
 
   Invoice(
       {this.id,
@@ -26,6 +35,10 @@ class Invoice {
       required this.paymentMoney,
       this.status = 'Đã lưu',
       required this.totalMoney,
+      this.products,
+      this.services,
+      this.customer,
+      this.staff,
       required this.createdAt});
 
   Map<String, dynamic> toMap() {

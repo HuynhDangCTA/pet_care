@@ -29,4 +29,7 @@ class RoutesConst {
   static const newDiscount = '/newDiscount';
   static const selectProduct = '/selectedProduct';
   static const newVoucher = '/newVoucher';
+  static const serviceDetail = '/serviceDetail';
+  static const invoiceDetail = '/invoiceDetail';
+  static const customerDetail = '/customerDetail';
 }

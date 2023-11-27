@@ -18,6 +18,9 @@ class CustomerPage extends GetView<CustomerController> {
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
               child: ListTile(
+                onTap: () async {
+                  await controller.goDetailCustomers(controller.customers[index]);
+                },
                 title: AppText(text: controller.customers[index].name),
                 subtitle: AppText(text: controller.customers[index].phone),
                 trailing: AppText(text: '${controller.customers[index].times}', textAlign: TextAlign.end,),

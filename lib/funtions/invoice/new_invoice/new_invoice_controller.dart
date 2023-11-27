@@ -656,11 +656,23 @@ class NewInvoiceController extends GetxController {
   }
 
   Future saveInvoice() async {
-    if (selectedCustomer.value == null) return;
-    if (selectedProduct.isEmpty && selectedServices.isEmpty) return;
-    if (paymentMethods.value.isEmpty) return;
+    if (selectedCustomer.value == null) {
+      DialogUtil.showSnackBar('Nhập thông tin khách hàng');
+      return;
+    }
+    if (selectedProduct.isEmpty && selectedServices.isEmpty) {
+      DialogUtil.showSnackBar('Chọn sản phẩm hoặc dịch vụ');
+      return;
+    }
+    if (paymentMethods.value.isEmpty) {
+      DialogUtil.showSnackBar('Chưa nhập đủ thông tin');
+      return;
+    }
     if (paymentMethods.value == PaymentMethods.cash &&
-        paymentController.text.isEmpty) return;
+        paymentController.text.isEmpty) {
+      DialogUtil.showSnackBar('Chưa nhập đủ thông tin');
+      return;
+    }
     DialogUtil.showLoading();
     int discountProduct = int.tryParse(productDiscountController.text) ?? 0;
     int discountService = int.tryParse(serviceDiscountController.text) ?? 0;
@@ -689,6 +701,7 @@ class NewInvoiceController extends GetxController {
       if (selectedProduct.isNotEmpty) {
         for (int i = 0; i < selectedProduct.length; i++) {
           Product product = Product.fromDocument(selectedProduct[i].toMap());
+          product.amount = amountProduct[i];
           product.id = selectedProduct[i].id;
           await FirebaseHelper.newInvoiceProduct(product, value.id)
               .then((valueProduct) {});
@@ -699,7 +712,7 @@ class NewInvoiceController extends GetxController {
         for (int i = 0; i < selectedServices.length; i++) {
           ServiceModel service =
               ServiceModel.fromDocument(selectedServices[i].toMap());
-          service.id = selectedProduct[i].id;
+          service.id = selectedServices[i].id;
           service.fromDate = dateService.value[i][Constants.startDate];
           service.toDate = dateService.value[i][Constants.endDate];
           service.days = dateService.value[i][Constants.dateCal];

@@ -32,6 +32,12 @@ class NewStaffController extends GetxController {
   UserResponse? staff = Get.arguments;
   bool isEdit = false;
 
+  RxBool passwordInVisible = true.obs;
+
+  void changeHideOrShowPassword() {
+    passwordInVisible.value = !passwordInVisible.value;
+  }
+
   @override
   void onInit() {
     if (staff != null) {
@@ -55,11 +61,11 @@ class NewStaffController extends GetxController {
   }
 
   Future register() async {
-    String username = usernameController.text;
-    String password = passwordController.text;
-    String fullname = fullNameController.text;
-    String phone = phoneController.text;
-    String address = addressController.text;
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+    String fullname = fullNameController.text.trim();
+    String phone = phoneController.text.trim();
+    String address = addressController.text.trim();
     String? image = '';
     String type = (typeAccount != null) ? typeAccount! : Constants.typeStaff;
     if (username.isEmpty ||
@@ -146,6 +152,7 @@ class NewStaffController extends GetxController {
     state.value = StateLoading();
     await FirebaseHelper.editUser(id, data).then((value) {
       state.value = StateSuccess();
+      Get.back();
       DialogUtil.showSnackBar('Cập nhật thành công');
     }).catchError((error) {
       debugPrint('error update: ${error.toString()}');

@@ -123,6 +123,11 @@ class FirebaseHelper {
     return database.collection(Constants.products).doc(id).update(data);
   }
 
+  static Future<void> updateService(
+      String id, Map<String, dynamic> data) async {
+    return database.collection(Constants.services).doc(id).update(data);
+  }
+
   static Future<void> updateProductWarehouse(
       String id, int amount, int price) async {
     return database
@@ -143,7 +148,10 @@ class FirebaseHelper {
   }
 
   static Future<QuerySnapshot> getAllServices() async {
-    return database.collection(Constants.services).get();
+    return database
+        .collection(Constants.services)
+        .where(Constants.isDeleted, isEqualTo: false)
+        .get();
   }
 
   static Future<DocumentReference> newWarehouse(Warehouse warehouse) async {
@@ -606,9 +614,26 @@ class FirebaseHelper {
     await database.collection(Constants.vouchers).doc(id).delete();
   }
 
-  static Future<QuerySnapshot> getAmountCustomer(DateTime fromDate, DateTime toDate) async {
-    return await database.collection(Constants.invoices)
+  static Future<QuerySnapshot> getAmountCustomer(
+      DateTime fromDate, DateTime toDate) async {
+    return await database
+        .collection(Constants.invoices)
         .where(Constants.createdAt, isGreaterThan: fromDate)
+        .get();
+  }
+
+  static Future<DocumentSnapshot> getCustomerFromID(String customerId) async {
+    return await database.collection(Constants.customers).doc(customerId).get();
+  }
+
+  static Future<DocumentSnapshot> getUserFromID(String staffId) async {
+    return await database.collection(Constants.users).doc(staffId).get();
+  }
+
+  static Future<QuerySnapshot> getAllOrderCustomer(String customerId) async {
+    return await database.collection(Constants.orders)
+        .where(Constants.customerId, isEqualTo: customerId)
+        .orderBy(Constants.createdAt, descending: true)
         .get();
   }
 }

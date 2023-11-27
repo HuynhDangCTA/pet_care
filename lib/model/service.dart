@@ -10,10 +10,11 @@ class ServiceModel {
   String? selectedOption;
   DateTime? fromDate;
   DateTime? toDate;
-  double discount;
+  int discount;
   double? days;
   bool isDog;
   bool isCat;
+  bool deleted;
 
   ServiceModel(
       {this.id,
@@ -23,6 +24,7 @@ class ServiceModel {
       this.isCat = false,
       this.image,
       this.decription,
+        this.deleted = false,
       this.isByDate = false,
       this.selectedOption,
       this.discount = 0,
@@ -39,7 +41,8 @@ class ServiceModel {
       Constants.description: decription,
       Constants.byDate: isByDate,
       Constants.isDog: isDog,
-      Constants.isCat: isCat
+      Constants.isCat: isCat,
+      Constants.isDeleted: deleted
     };
   }
 
@@ -63,9 +66,8 @@ class ServiceModel {
         options: data[Constants.options],
         decription: data[Constants.description],
         isByDate: data[Constants.byDate],
-        fromDate: data[Constants.startDate].toDate(),
-        toDate: data[Constants.endDate].toDate(),
-        discount: data[Constants.discount],
+        fromDate: (data[Constants.startDate] != null) ? data[Constants.startDate].toDate() : null,
+        toDate:(data[Constants.endDate]!= null) ?  data[Constants.endDate].toDate() : null,
         selectedOption: data[Constants.selectedOption],
         days: data[Constants.dateCal]);
   }
@@ -81,6 +83,17 @@ class ServiceModel {
         isDog: data[Constants.isDog] ?? false,
         isCat: data[Constants.isCat] ?? false,
         selectedOption: data[Constants.selectedOption],
+        deleted: data[Constants.isDeleted] ?? false,
         days: data[Constants.dateCal]);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ServiceModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

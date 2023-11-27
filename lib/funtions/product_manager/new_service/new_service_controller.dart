@@ -5,9 +5,14 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pet_care/core/constants.dart';
 import 'package:pet_care/funtions/product_manager/product_controller.dart';
 import 'package:pet_care/model/service.dart';
+import 'package:pet_care/util/crop_image.dart';
+import 'package:pet_care/util/dialog_util.dart';
+import 'package:pet_care/util/file_util.dart';
 import 'package:pet_care/util/loading.dart';
 
 import '../../../model/state.dart';
@@ -16,7 +21,7 @@ import '../../../util/number_util.dart';
 import '../../../widgets/card_control.dart';
 
 class NewServiceController extends GetxController {
-  ServiceModel? service;
+  ServiceModel? service = Get.arguments;
   final ImagePicker picker = ImagePicker();
   Rx<File?> imageFile = Rx(null);
   Rx<AppState> state = Rx(StateSuccess());
@@ -32,6 +37,29 @@ class NewServiceController extends GetxController {
   RxBool isDog = false.obs;
   RxBool isCat = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    if (service != null) {
+      image.value = Image.network(service!.image!);
+      nameController.text = service!.name ?? '';
+      descriptionController.text = service!.decription ?? '';
+      isByDate.value = service!.isByDate;
+      for (int i = 0; i < service!.options!.values.length; i++) {
+        if (i == 0) {
+          optionControllers[0].text = service!.options!.keys.toList()[0];
+          priceControllers[0].text =
+              service!.options!.values.toList()[0].toString();
+        } else {
+          optionControllers.add(
+              TextEditingController(text: service!.options!.keys.toList()[i]));
+          priceControllers.add(TextEditingController(
+              text: service!.options!.values.toList()[i].toString()));
+        }
+      }
+    }
+  }
+
   void newOption() {
     optionControllers.add(TextEditingController());
     priceControllers.add(TextEditingController());
@@ -42,7 +70,7 @@ class NewServiceController extends GetxController {
     priceControllers.removeLast();
   }
 
-  void newService() async {
+  Future newService() async {
     if (imageFile.value == null) {
       state.value = StateError('Chưa chọn hình ảnh');
       return;
@@ -92,6 +120,54 @@ class NewServiceController extends GetxController {
     Loading.hideLoading();
   }
 
+  Future updateService() async {
+    String name = nameController.text;
+    String description = descriptionController.text;
+    String? image = service!.image;
+
+    if (name.isEmpty || description.isEmpty) {
+      return;
+    }
+    Map<String, dynamic> options = {};
+    for (var index = 0; index < optionControllers.length; index++) {
+      if (optionControllers[index].text.isEmpty ||
+          priceControllers[index].text.isEmpty) return;
+      int price =
+          NumberUtil.parseCurrency(priceControllers[index].text).toInt();
+      options.addAll({optionControllers[index].text: price});
+    }
+    state.value = StateLoading();
+    if (kIsWeb) {
+      if (webImage.value != null) {
+        image = await FirebaseHelper.uploadFileWeb(
+            webImage.value!, 'services/${FileUtil.getFileNameFromUrl(image!)}');
+      }
+    } else {
+      if (imageFile.value != null) {
+        image = await FirebaseHelper.uploadFile(imageFile.value!,
+            'services/${FileUtil.getFileNameFromUrl(image!)}');
+      }
+    }
+
+    Map<String, dynamic> data = {
+      Constants.name: name,
+      Constants.description: description,
+      Constants.options: options,
+      Constants.byDate: isByDate.value,
+    };
+
+    if (image != null) {
+      data[Constants.image] = image;
+    }
+    print('data update: $data');
+
+    await FirebaseHelper.updateService(service!.id!, data).then((value) {
+      state.value = StateSuccess();
+      Get.back();
+      DialogUtil.showSnackBar('Cập nhật thành công');
+    });
+  }
+
   void pickImage() async {
     await Get.bottomSheet(Container(
       padding: EdgeInsets.only(bottom: 20, top: 20),
@@ -135,7 +211,11 @@ class NewServiceController extends GetxController {
     final XFile? imagePick = await picker.pickImage(source: ImageSource.camera);
     if (!kIsWeb) {
       if (imagePick != null) {
-        imageFile.value = File(imagePick!.path);
+        CroppedFile? croppedFile =
+        await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+        }
         if (imageFile.value != null) {
           image.value = Image.file(
             imageFile.value!,
@@ -144,23 +224,33 @@ class NewServiceController extends GetxController {
         }
       }
     } else if (kIsWeb) {
-      webImage.value = await imagePick?.readAsBytes();
-      imageFile.value = File(imagePick!.path);
-      if (webImage.value != null) {
-        image.value = Image.memory(
-          webImage.value!,
-          fit: BoxFit.cover,
-        );
+      if (imagePick != null) {
+        CroppedFile? croppedFile =
+        await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+          webImage.value = await croppedFile.readAsBytes();
+        }
+        if (webImage.value != null) {
+          image.value = Image.memory(
+            webImage.value!,
+            fit: BoxFit.cover,
+          );
+        }
       }
     }
   }
 
   Future pickImageFromGallery() async {
     final XFile? imagePick =
-        await picker.pickImage(source: ImageSource.gallery);
+    await picker.pickImage(source: ImageSource.gallery);
     if (!kIsWeb) {
       if (imagePick != null) {
-        imageFile.value = File(imagePick!.path);
+        CroppedFile? croppedFile =
+        await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+        }
         if (imageFile.value != null) {
           image.value = Image.file(
             imageFile.value!,
@@ -169,13 +259,20 @@ class NewServiceController extends GetxController {
         }
       }
     } else if (kIsWeb) {
-      webImage.value = await imagePick?.readAsBytes();
-      imageFile.value = File(imagePick!.path);
-      if (webImage.value != null) {
-        image.value = Image.memory(
-          webImage.value!,
-          fit: BoxFit.cover,
-        );
+      if (imagePick != null) {
+        CroppedFile? croppedFile =
+        await CropImage.cropImage(imagePick.path, Get.context!);
+        if (croppedFile != null) {
+          imageFile.value = File(croppedFile.path);
+          webImage.value = await croppedFile.readAsBytes();
+        }
+
+        if (webImage.value != null) {
+          image.value = Image.memory(
+            webImage.value!,
+            fit: BoxFit.cover,
+          );
+        }
       }
     }
   }

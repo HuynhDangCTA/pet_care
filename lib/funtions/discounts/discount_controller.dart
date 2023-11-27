@@ -4,6 +4,8 @@ import 'package:pet_care/model/discount.dart';
 import 'package:pet_care/model/voucher.dart';
 import 'package:pet_care/network/firebase_helper.dart';
 import 'package:pet_care/util/dialog_util.dart';
+import 'package:pet_care/widgets/app_button.dart';
+import 'package:pet_care/widgets/app_text.dart';
 
 class DiscountController extends GetxController {
   RxList<Discount> discounts = <Discount>[].obs;
@@ -60,21 +62,74 @@ class DiscountController extends GetxController {
         }
       }
       vouchers.refresh();
-    }, deletedEvent: (voucher ) {
+    }, deletedEvent: (voucher) {
       vouchers.remove(voucher);
     });
   }
 
   Future deleteDiscount(Discount discount) async {
-    await FirebaseHelper.deleteDiscount(discount.id!).then((value) {
-      discounts.remove(discount);
-      DialogUtil.showSnackBar('Xóa thành công');
-    });
+    Get.dialog(AlertDialog(
+      title: const AppText(
+        text: "Xác nhận xóa",
+      ),
+      content: const AppText(
+        text: 'Bạn có chắc chắn muốn xóa?',
+      ),
+      actions: [
+        AppButton(
+          onPressed: () async {
+            await FirebaseHelper.deleteDiscount(discount.id!).then((value) {
+              discounts.remove(discount);
+              Get.back();
+              DialogUtil.showSnackBar('Xóa thành công');
+            });
+
+          },
+          text: 'Đồng ý',
+          height: 50,
+        ),
+        AppButton(
+            onPressed: () {
+              Get.back();
+            },
+            text: 'Hủy',
+            backgroundColor: Colors.grey,
+            height: 50,
+            textColor: Colors.white,
+            isShadow: true),
+      ],
+    ));
   }
 
   Future deleteVoucher(String id) async {
-    await FirebaseHelper.deleteVoucher(id).then((value) {
-      DialogUtil.showSnackBar('Xóa thành công');
-    });
+    Get.dialog(AlertDialog(
+      title: const AppText(
+        text: "Xác nhận xóa",
+      ),
+      content: const AppText(
+        text: 'Bạn có chắc chắn muốn xóa?',
+      ),
+      actions: [
+        AppButton(
+          onPressed: () async {
+            await FirebaseHelper.deleteVoucher(id).then((value) {
+              Get.back();
+              DialogUtil.showSnackBar('Xóa thành công');
+            });
+          },
+          text: 'Đồng ý',
+          height: 50,
+        ),
+        AppButton(
+            onPressed: () {
+              Get.back();
+            },
+            text: 'Hủy',
+            backgroundColor: Colors.grey,
+            height: 50,
+            textColor: Colors.white,
+            isShadow: true),
+      ],
+    ));
   }
 }

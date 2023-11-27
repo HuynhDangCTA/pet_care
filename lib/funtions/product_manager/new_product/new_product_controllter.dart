@@ -190,7 +190,7 @@ class NewProductController extends GetxController {
     if (kIsWeb) {
       if (webImage.value != null) {
         image = await FirebaseHelper.uploadFileWeb(webImage.value!,
-            'prodcuts/$name*${DateTime.now().millisecondsSinceEpoch}');
+            'prodcuts/${FileUtil.getFileNameFromUrl(image!)}');
       }
     } else {
       if (imageFile.value != null) {
@@ -207,11 +207,12 @@ class NewProductController extends GetxController {
     };
 
     if (image != null) {
-      data.assign(Constants.image, image);
+      data[Constants.image] = image;
     }
 
     await FirebaseHelper.updateProduct(product!.id!, data).then((value) {
       state.value = StateSuccess();
+      Get.back();
       DialogUtil.showSnackBar('Cập nhật thành công');
     });
   }

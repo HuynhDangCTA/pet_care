@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:pet_care/bindings/all_binding.dart';
 import 'package:pet_care/funtions/cart/cart_page.dart';
+import 'package:pet_care/funtions/customer/customer_detail/customer_detail_page.dart';
 import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
 import 'package:pet_care/funtions/discounts/discount_page.dart';
@@ -9,11 +10,13 @@ import 'package:pet_care/funtions/discounts/new_discount/select_product_page.dar
 import 'package:pet_care/funtions/discounts/new_voucher/new_voucher_page.dart';
 import 'package:pet_care/funtions/invoice/add_product/add_product_page.dart';
 import 'package:pet_care/funtions/invoice/add_product/add_service_page.dart';
+import 'package:pet_care/funtions/invoice/detail/invoice_detail_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_page.dart';
 import 'package:pet_care/funtions/order_manager/order_manager_page.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_page.dart';
 import 'package:pet_care/funtions/product_manager/product_detail/product_detail_page.dart';
+import 'package:pet_care/funtions/product_manager/service_detail/service_detail_page.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/new_product_warehouse.dart';
 import 'package:pet_care/funtions/product_manager/warehouse/warehouse_page.dart';
 import 'package:pet_care/funtions/room/new_room_cat/new_room_cat_page.dart';
@@ -170,6 +173,23 @@ class Routes {
     GetPage(
         name: RoutesConst.order,
         page: () => const OrderManagerPage(),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.serviceDetail,
+        page: () => ServiceDetailPage(service: Get.arguments),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+
+    GetPage(
+        name: RoutesConst.invoiceDetail,
+        page: () => InvoiceDetailPage(invoice: Get.arguments),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+
+    GetPage(
+        name: RoutesConst.customerDetail,
+        page: () => CustomerDetailPage(customer: Get.arguments),
         transition: Transition.rightToLeft,
         binding: AllBinding()),
   ];

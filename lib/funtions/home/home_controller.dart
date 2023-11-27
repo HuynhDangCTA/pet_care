@@ -19,7 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HomeController extends GetxController {
   static HomeController get instants => Get.find();
 
-  RxInt currentPage = 1.obs;
+  RxInt currentPage = 0.obs;
   RxBool isAdmin = false.obs;
   UserResponse? userCurrent;
 

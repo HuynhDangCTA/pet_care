@@ -66,19 +66,34 @@ class NewStaffPage extends GetView<NewStaffController> {
                   const SizedBox(
                     height: 20,
                   ),
-                  MyTextFormField(
-                    label: 'Mật khẩu',
-                    controller: controller.passwordController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Mật khẩu không được để trống';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  (controller.staff == null)
+                      ? Obx(() => Column(
+                        children: [
+                          MyTextFormField(
+                                label: 'Mật khẩu',
+                                controller: controller.passwordController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Mật khẩu không được để trống';
+                                  }
+                                  return null;
+                                },
+                                obscureText: controller.passwordInVisible.value,
+                                suffixIcon: InkWell(
+                                  child: (controller.passwordInVisible.value)
+                                      ? const Icon(Icons.visibility_off)
+                                      : const Icon(Icons.visibility),
+                                  onTap: () {
+                                    controller.changeHideOrShowPassword();
+                                  },
+                                ),
+                              ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ))
+                      : Container(),
                   MyTextFormField(
                     label: 'Tên nhân viên',
                     controller: controller.fullNameController,

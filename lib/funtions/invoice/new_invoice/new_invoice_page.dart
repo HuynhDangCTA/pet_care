@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:pet_care/core/colors.dart';
 import 'package:pet_care/core/payment_methods_charactor.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_controller.dart';
+import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/util/number_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
@@ -430,29 +431,31 @@ class NewInvoicePage extends GetView<NewInvoiceController> {
                   children: [
                     const Expanded(
                         child: AppText(
-                          text: 'Tiền khách đưa:',
-                        )),
+                      text: 'Tiền khách đưa:',
+                    )),
                     Expanded(
                         child: AppText(
-                          textAlign: TextAlign.end,
-                          text: NumberUtil.formatCurrency(
-                              controller.calculationCash()),
-                        )),
+                      textAlign: TextAlign.end,
+                      text: NumberUtil.formatCurrency(
+                          controller.calculationCash()),
+                    )),
                   ],
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     const Expanded(
                         child: AppText(
-                          text: 'Tiền thối lại',
-                        )),
+                      text: 'Tiền thối lại',
+                    )),
                     Expanded(
                         child: AppText(
-                          textAlign: TextAlign.end,
-                          text: NumberUtil.formatCurrency(
-                              controller.calculationChangeDue()),
-                        )),
+                      textAlign: TextAlign.end,
+                      text: NumberUtil.formatCurrency(
+                          controller.calculationChangeDue()),
+                    )),
                   ],
                 ),
               ],
@@ -514,7 +517,6 @@ class NewInvoicePage extends GetView<NewInvoiceController> {
                     )
                   : Container(),
             ),
-
           ],
         ),
       ),
@@ -557,20 +559,28 @@ class NewInvoicePage extends GetView<NewInvoiceController> {
               Row(
                 children: [
                   Expanded(
-                    child: AppButton(onPressed: () {
-
-                    }, text: 'Lưu', backgroundColor: Colors.blue,),
+                    child: AppButton(
+                      onPressed: () {
+                        if (controller.invoice == null) {
+                          controller.saveInvoice();
+                        } else {
+                          controller.updateInvoice();
+                        }
+                      },
+                      text: 'Lưu',
+                      backgroundColor: Colors.blue,
+                    ),
                   ),
-                  const SizedBox(width: 20,),
+                  const SizedBox(
+                    width: 20,
+                  ),
                   Expanded(
-                    child: AppButton(onPressed: () {
-                      if (controller.invoice == null) {
-                        controller.saveInvoice();
-                      } else {
-                        controller.updateInvoice();
-                      }
-
-                    }, text: 'In',),
+                    child: AppButton(
+                      onPressed: () {
+                        DialogUtil.showSnackBar('Chức năng đang phát triển');
+                      },
+                      text: 'In',
+                    ),
                   )
                 ],
               )

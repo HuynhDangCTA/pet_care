@@ -30,6 +30,8 @@ class ProductController extends GetxController {
   RxList<String> typeProducts = <String>[].obs;
   Rx<AppState> state = Rx(StateSuccess());
 
+  bool isAdmin = HomeController.instants.isAdmin.value;
+
   @override
   void onInit() async {
     super.onInit();
@@ -252,16 +254,81 @@ class ProductController extends GetxController {
   }
 
   Future deleteProduct(Product product) async {
-    await FirebaseHelper.updateProduct(product.id!, {Constants.isDeleted: true})
-        .then((value) {
-          productsGet.remove(product);
-          products.clear();
-          products.addAll(productsGet);
-      DialogUtil.showSnackBar('Xóa thành công');
-    });
+    Get.dialog(AlertDialog(
+      title: const AppText(
+        text: "Xác nhận xóa",
+      ),
+      content: const AppText(
+        text: 'Bạn có chắc chắn muốn xóa?',
+      ),
+      actions: [
+        AppButton(
+          onPressed: () async {
+            await FirebaseHelper.updateProduct(
+                product.id!, {Constants.isDeleted: true}).then((value) {
+              productsGet.remove(product);
+              products.clear();
+              products.addAll(productsGet);
+              Get.back();
+              DialogUtil.showSnackBar('Xóa thành công');
+            });
+          },
+          text: 'Đồng ý',
+          height: 50,
+        ),
+        AppButton(
+            onPressed: () {
+              Get.back();
+            },
+            text: 'Hủy',
+            backgroundColor: Colors.grey,
+            height: 50,
+            textColor: Colors.white,
+            isShadow: true),
+      ],
+    ));
+  }
+
+  Future deleteService(ServiceModel service) async {
+    Get.dialog(AlertDialog(
+      title: const AppText(
+        text: "Xác nhận xóa",
+      ),
+      content: const AppText(
+        text: 'Bạn có chắc chắn muốn xóa?',
+      ),
+      actions: [
+        AppButton(
+          onPressed: () async {
+            await FirebaseHelper.updateService(
+                service.id!, {Constants.isDeleted: true}).then((value) {
+              services.remove(service);
+              services.refresh();
+              Get.back();
+              DialogUtil.showSnackBar('Xóa thành công');
+            });
+          },
+          text: 'Đồng ý',
+          height: 50,
+        ),
+        AppButton(
+            onPressed: () {
+              Get.back();
+            },
+            text: 'Hủy',
+            backgroundColor: Colors.grey,
+            height: 50,
+            textColor: Colors.white,
+            isShadow: true),
+      ],
+    ));
   }
 
   void changeScreen(value) {
     currentStep.value = value;
+  }
+
+  void editService(ServiceModel service) {
+    Get.toNamed(RoutesConst.newService, arguments: service);
   }
 }
