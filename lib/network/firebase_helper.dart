@@ -489,12 +489,15 @@ class FirebaseHelper {
       {required Function(OrderModel order) onAdded,
       required Function(OrderModel order) onModified,
       required Function(OrderModel order) onRemoved}) {
+    DateTime now = DateTime.now().subtract(Duration(days: 7));
+
     return database
         .collection(Constants.orders)
         .where(Constants.status, whereIn: [
           OrderStatusConst.giaoHangThanhCong,
           OrderStatusConst.giaoHangThatBai
         ])
+        .where(Constants.createdAt, isGreaterThan: now)
         .orderBy(Constants.createdAt, descending: true)
         .snapshots()
         .listen((event) {

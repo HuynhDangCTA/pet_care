@@ -123,12 +123,12 @@ class OrderManagerController extends GetxController {
           customer.id = value.docs[0].id;
           order.staff = customer;
         });
-
-        if (user!.type! == Constants.typeAdmin) {
-          finishOrders.add(order);
-        } else if (user!.id! == order.staff!.id!) {
-          finishOrders.add(order);
-        }
+        finishOrders.add(order);
+        // if (user!.type! == Constants.typeAdmin) {
+        //   finishOrders.add(order);
+        // } else if (user!.id! == order.staff!.id!) {
+        //
+        // }
       },
       onModified: (order) {
         if (finishOrders.contains(order)) {

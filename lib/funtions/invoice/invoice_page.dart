@@ -128,7 +128,7 @@ class InvoicePage extends GetView<InvoiceController> {
                                     Row(
                                       children: [
                                         const Expanded(
-                                            child: AppText(text: 'Khách hing')),
+                                            child: AppText(text: 'Khách hàng')),
                                         Expanded(
                                             child: AppText(
                                           text: controller
@@ -178,7 +178,7 @@ class InvoicePage extends GetView<InvoiceController> {
                                                 'Đã lưu')
                                             ? AppButton(
                                                 onPressed: () {
-                                                  DialogUtil.showSnackBar('Chức nâng đang phát triển');
+                                                  DialogUtil.showSnackBar('Chức năng đang phát triển');
                                                 },
                                                 text: 'In hóa đơn',
                                                 height: 48,

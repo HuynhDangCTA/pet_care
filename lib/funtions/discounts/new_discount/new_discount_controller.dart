@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pet_care/core/constants.dart';
+import 'package:pet_care/funtions/discounts/discount_controller.dart';
 import 'package:pet_care/model/discount.dart';
 import 'package:pet_care/model/product.dart';
 import 'package:pet_care/network/firebase_helper.dart';
@@ -108,8 +109,10 @@ class NewDiscountController extends GetxController {
     await FirebaseHelper.newDiscount(discount).then((value) {
       DialogUtil.hideLoading();
       DialogUtil.showSnackBar('Thêm thành công');
+      discount.id = value.id;
       nameController.clear();
       discountController.clear();
+      DiscountController.instants.discounts.add(discount);
     });
   }
 }

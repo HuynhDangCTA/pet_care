@@ -7,11 +7,15 @@ import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
 
+import '../home/home_controller.dart';
+
 class DiscountController extends GetxController {
+  static DiscountController get instants => Get.find();
   RxList<Discount> discounts = <Discount>[].obs;
   RxList<Voucher> vouchers = <Voucher>[].obs;
   RxInt currentStep = 0.obs;
   final DateTime now = DateTime.now();
+  RxBool isAdmin = HomeController.instants.isAdmin;
 
   @override
   void onInit() async {

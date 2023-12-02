@@ -78,17 +78,19 @@ class DiscountPage extends GetView<DiscountController> {
                           AppText(text: 'Giảm giá: ${discount.discount}%')
                         ],
                       ),
-                      Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: IconButton(
-                              onPressed: () async {
-                                await controller.deleteDiscount(discount);
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                                color: MyColors.primaryColor,
-                              )))
+                      Obx(() => (controller.isAdmin.value)
+                          ? Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: IconButton(
+                                  onPressed: () async {
+                                    await controller.deleteDiscount(discount);
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: MyColors.primaryColor,
+                                  )))
+                          : Container())
                     ],
                   ),
                 ),
@@ -154,17 +156,19 @@ class DiscountPage extends GetView<DiscountController> {
                           AppText(text: 'Giảm giá: ${voucher.discount}%')
                         ],
                       ),
-                      Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: IconButton(
-                              onPressed: () {
-                                controller.deleteVoucher(voucher.id!);
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                                color: MyColors.primaryColor,
-                              )))
+                      (controller.isAdmin.value)
+                          ? Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: IconButton(
+                                  onPressed: () {
+                                    controller.deleteVoucher(voucher.id!);
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: MyColors.primaryColor,
+                                  )))
+                          : Container()
                     ],
                   ),
                 ),
@@ -182,27 +186,29 @@ class DiscountPage extends GetView<DiscountController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  CardControl(
-                    image: 'images/ic_discount.png',
-                    text: 'Tạo khuyễn mãi',
-                    onTap: () {
-                      Get.toNamed(RoutesConst.newDiscount);
-                    },
-                  ),
-                  CardControl(
-                    image: 'images/ic_voucher.png',
-                    text: 'Tạo Voucher',
-                    onTap: () {
-                      Get.toNamed(RoutesConst.newVoucher);
-                    },
-                  ),
-                ],
-              ),
-            ),
+            Obx(() => (controller.isAdmin.value)
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        CardControl(
+                          image: 'images/ic_discount.png',
+                          text: 'Tạo khuyễn mãi',
+                          onTap: () {
+                            Get.toNamed(RoutesConst.newDiscount);
+                          },
+                        ),
+                        CardControl(
+                          image: 'images/ic_voucher.png',
+                          text: 'Tạo Voucher',
+                          onTap: () {
+                            Get.toNamed(RoutesConst.newVoucher);
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                : Container()),
             const SizedBox(
               height: 10,
             ),

@@ -32,11 +32,15 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      AppText(
-                        text: controller.product.name ?? '',
-                        color: MyColors.primaryColor,
-                        size: 20,
-                        isBold: true,
+                      Expanded(
+                        child: AppText(
+                          text: controller.product.name ?? '',
+                          color: MyColors.primaryColor,
+                          size: 20,
+                          maxLines: 3,
+                          isBold: true,
+                          textAlign: TextAlign.justify,
+                        ),
                       ),
                     ],
                   ),
@@ -53,12 +57,18 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                   const SizedBox(
                     height: 10,
                   ),
-                  AppText(text: controller.product.description ?? ''),
+                  AppText(
+                    text: controller.product.description ?? '',
+                    maxLines: 10000,
+                    textAlign: TextAlign.justify,
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
                   const AppText(text: 'Mã code:'),
-                  const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   BarcodeWidget(
                     height: 100,
                     barcode: Barcode.code128(),
