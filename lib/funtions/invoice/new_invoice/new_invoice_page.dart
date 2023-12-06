@@ -523,7 +523,6 @@ class NewInvoicePage extends GetView<NewInvoiceController> {
     );
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Tạo hóa đơn'),
       ),

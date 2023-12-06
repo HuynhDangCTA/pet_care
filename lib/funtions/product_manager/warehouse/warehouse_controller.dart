@@ -11,6 +11,7 @@ import 'package:pet_care/funtions/product_manager/product_controller.dart';
 import 'package:pet_care/model/product.dart';
 import 'package:pet_care/model/warehouse.dart';
 import 'package:pet_care/network/firebase_helper.dart';
+import 'package:pet_care/util/dialog_util.dart';
 import 'package:pet_care/util/loading.dart';
 import 'package:pet_care/util/number_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
@@ -81,6 +82,7 @@ class WarehouseController extends GetxController {
   void newWarehouse() async {
     if (imageFile.value == null) {
       state.value = StateError('Chưa chọn hình ảnh');
+      DialogUtil.showSnackBar('Chưa chọn hình ảnh');
       return;
     }
 
@@ -115,6 +117,7 @@ class WarehouseController extends GetxController {
         await FirebaseHelper.updateProductWarehouse(
             item.product.id!, item.amount, item.price);
       }
+
     });
     Get.back();
     Loading.hideLoading();

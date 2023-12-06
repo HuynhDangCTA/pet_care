@@ -33,8 +33,8 @@ class NewProductWarehousePage extends GetView<WarehouseController> {
                   Expanded(
                       child: (controller.productFilter.value.isNotEmpty)
                           ? GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
+                              // physics: const NeverScrollableScrollPhysics(),
+                              // shrinkWrap: true,
                               itemCount: controller.productFilter.value.length,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(

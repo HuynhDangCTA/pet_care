@@ -51,7 +51,7 @@ class ServiceDetailPage extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  AppText(text: 'Mô tả: ' + (service.decription ?? '')),
+                  AppText(text: 'Mô tả: ' + (service.decription ?? ''), maxLines: 1000,),
                   const SizedBox(
                     height: 20,
                   ),

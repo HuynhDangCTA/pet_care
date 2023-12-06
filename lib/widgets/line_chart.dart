@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pet_care/core/colors.dart';
 import 'package:pet_care/model/chart_data.dart';
 import 'package:pet_care/widgets/app_text.dart';
 import 'package:pet_care/widgets/empty_data.dart';
@@ -43,13 +44,14 @@ class LineChart extends StatelessWidget {
                   position: LegendPosition.bottom,
                   overflowMode: LegendItemOverflowMode.wrap),
               tooltipBehavior: TooltipBehavior(enable: true),
-              series: <LineSeries<ChartData, String>>[
-                LineSeries<ChartData, String>(
+              series: <SplineSeries<ChartData, String>>[
+                SplineSeries<ChartData, String>(
                   dataSource: data,
                   dataLabelSettings: const DataLabelSettings(
                     connectorLineSettings: ConnectorLineSettings(
                         length: '15', type: ConnectorType.curve, width: 3),
                     isVisible: true,
+
                     margin: EdgeInsets.all(0),
                     labelPosition: ChartDataLabelPosition.outside,
                     textStyle: TextStyle(
@@ -57,7 +59,14 @@ class LineChart extends StatelessWidget {
                     labelIntersectAction: LabelIntersectAction.none,
                   ),
                   xValueMapper: (ChartData data, _) => data.x,
+                  splineType: SplineType.monotonic,
                   yValueMapper: (ChartData data, _) => data.y,
+                  markerSettings: const MarkerSettings(
+                    color: MyColors.primaryColor,
+                    isVisible: true,
+                    width: 8,
+                    height: 8
+                  )
                 )
               ],
             ) : const EmptyDataWidget(),

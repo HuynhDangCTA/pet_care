@@ -112,7 +112,7 @@ class FirebaseHelper {
   }
 
   static Future<QuerySnapshot> getAllProducts() async {
-    return database
+    return await database
         .collection(Constants.products)
         .orderBy(Constants.sold, descending: true)
         .get();
@@ -634,7 +634,8 @@ class FirebaseHelper {
   }
 
   static Future<QuerySnapshot> getAllOrderCustomer(String customerId) async {
-    return await database.collection(Constants.orders)
+    return await database
+        .collection(Constants.orders)
         .where(Constants.customerId, isEqualTo: customerId)
         .orderBy(Constants.createdAt, descending: true)
         .get();

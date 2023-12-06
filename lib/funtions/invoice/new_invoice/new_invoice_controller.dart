@@ -444,104 +444,107 @@ class NewInvoiceController extends GetxController {
           constraints: BoxConstraints(
             maxHeight: Get.height * 0.8,
           ),
-          child: Column(
-            children: [
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: serviceModel.options!.keys.length,
-                itemBuilder: (context, index) {
-                  return Obx(() => RadioListTile(
-                        value: serviceModel.options!.keys
-                            .toList()[index]
-                            .toString(),
-                        groupValue: optionRadioService.value,
-                        onChanged: (value) {
-                          optionRadioService.value = value!;
-                        },
-                        title: Text(serviceModel.options!.keys
-                            .toList()[index]
-                            .toString()),
-                      ));
-                },
-              ),
-              (serviceModel.isByDate)
-                  ? Column(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: serviceModel.options!.keys.length,
+                  itemBuilder: (context, index) {
+                    return Obx(() => RadioListTile(
+                          value: serviceModel.options!.keys
+                              .toList()[index]
+                              .toString(),
+                          groupValue: optionRadioService.value,
+                          onChanged: (value) {
+                            optionRadioService.value = value!;
+                          },
+                          title: Text(serviceModel.options!.keys
+                              .toList()[index]
+                              .toString()),
+                        ));
+                  },
+                ),
+                (serviceModel.isByDate)
+                    ? Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(flex: 1, child: AppText(text: 'Ngày gửi')),
+                              Expanded(
+                                flex: 2,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    pickDate(selectedDateStart);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    height: 58,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey.withOpacity(0.3),
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Obx(() => AppText(
+                                            text:
+                                                '${DateTimeUtil.formatTime(selectedDateStart.value)}')),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              const Expanded(
+                                  flex: 1, child: AppText(text: 'Ngày nhận')),
+                              Expanded(
+                                flex: 2,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    pickDate(selectedDateEnd);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    height: 58,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey.withOpacity(0.3),
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        Obx(() => AppText(
+                                            text:
+                                                '${DateTimeUtil.formatTime(selectedDateEnd.value)}')),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    : Container(),
+                const SizedBox(
+                  height: 15,
+                ),
+                Obx(() => Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(flex: 1, child: AppText(text: 'Ngày gửi')),
-                            Expanded(
-                              flex: 2,
-                              child: GestureDetector(
-                                onTap: () {
-                                  pickDate(selectedDateStart);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  height: 58,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey.withOpacity(0.3),
-                                          width: 1),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Obx(() => AppText(
-                                          text:
-                                              '${DateTimeUtil.formatTime(selectedDateStart.value)}')),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            const Expanded(
-                                flex: 1, child: AppText(text: 'Ngày nhận')),
-                            Expanded(
-                              flex: 2,
-                              child: GestureDetector(
-                                onTap: () {
-                                  pickDate(selectedDateEnd);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  height: 58,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey.withOpacity(0.3),
-                                          width: 1),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Obx(() => AppText(
-                                          text:
-                                              '${DateTimeUtil.formatTime(selectedDateEnd.value)}')),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                        Expanded(child: AppText(text: 'Số ngày gửi')),
+                        Expanded(child: AppText(text: _calculationDate()))
                       ],
-                    )
-                  : Container(),
-              const SizedBox(
-                height: 15,
-              ),
-              Obx(() => Row(
-                    children: [
-                      Expanded(child: AppText(text: 'Số ngày gửi')),
-                      Expanded(child: AppText(text: _calculationDate()))
-                    ],
-                  ))
-            ],
+                    ))
+              ],
+            ),
           ),
         ),
         actions: [

@@ -165,10 +165,10 @@ class NewProductController extends GetxController {
       state.value = StateSuccess();
       DialogUtil.showSnackBar('Thêm mới thành công');
       clearEditText();
-    }).catchError((error) {
+    }).onError((error, stackTrace) {
       state.value = StateError(error.toString());
-      DialogUtil.showSnackBar('Thêm mới thất bại');
-    });
+      // DialogUtil.showSnackBar('Thêm mới thất bại');
+    },);
   }
 
   void editProduct() async {

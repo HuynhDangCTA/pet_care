@@ -15,7 +15,7 @@ class HomePage extends GetView<HomeController> {
         actions: [
           IconButton(onPressed: () {
               controller.logout();
-          }, icon: Icon(Icons.logout))
+          }, icon: const Icon(Icons.logout))
         ],
         title: Obx(
           () => Text(controller.titles[controller.currentPage.value]),

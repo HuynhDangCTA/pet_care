@@ -32,4 +32,5 @@ class RoutesConst {
   static const serviceDetail = '/serviceDetail';
   static const invoiceDetail = '/invoiceDetail';
   static const customerDetail = '/customerDetail';
+  static const orderDetail = '/orderDetail';
 }

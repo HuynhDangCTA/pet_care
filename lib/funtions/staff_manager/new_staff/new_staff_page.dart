@@ -14,7 +14,7 @@ class NewStaffPage extends GetView<NewStaffController> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+
       appBar: AppBar(
         title: const Text('Thêm nhân viên mới'),
       ),

@@ -62,6 +62,7 @@ class ProductController extends GetxController {
     await FirebaseHelper.getAllProducts().then((value) async {
       state.value = StateSuccess();
       if (value.docs.isNotEmpty) {
+        print('product: ${value.docs.length}');
         List<Product> result = [];
         state.value = StateSuccess();
         for (var doc in value.docs) {

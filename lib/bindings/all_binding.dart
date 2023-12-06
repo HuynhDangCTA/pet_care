@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:pet_care/funtions/cart/cart_controller.dart';
 import 'package:pet_care/funtions/customer/customer_controller.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_controller.dart';
 import 'package:pet_care/funtions/discounts/discount_controller.dart';
@@ -38,7 +37,6 @@ class AllBinding extends Bindings {
     Get.lazyPut(() => NewInvoiceController());
     Get.lazyPut(() => RegisterController());
     Get.lazyPut(() => SplashController());
-    Get.lazyPut(() => CartController());
     Get.lazyPut(() => ProductDetailController());
     Get.lazyPut(() => DiscountController());
     Get.lazyPut(() => RoomController());

@@ -5,6 +5,7 @@ import 'package:pet_care/core/colors.dart';
 import 'package:pet_care/funtions/order_manager/order_manager_controller.dart';
 import 'package:pet_care/funtions/order_manager/order_status.dart';
 import 'package:pet_care/model/order_model.dart';
+import 'package:pet_care/routes/routes_const.dart';
 import 'package:pet_care/util/number_util.dart';
 import 'package:pet_care/widgets/app_button.dart';
 import 'package:pet_care/widgets/app_text.dart';
@@ -21,10 +22,12 @@ class OrderManagerPage extends GetView<OrderManagerController> {
             itemCount: controller.waitOrders.length,
             itemBuilder: (context, index) {
               OrderModel order = controller.waitOrders[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: GestureDetector(
-                  onTap: () {},
+              return GestureDetector(
+                onTap: () {
+                  Get.toNamed(RoutesConst.orderDetail, arguments: order);
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -184,10 +187,12 @@ class OrderManagerPage extends GetView<OrderManagerController> {
             itemCount: controller.unFinishOrders.length,
             itemBuilder: (context, index) {
               OrderModel order = controller.unFinishOrders[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: GestureDetector(
-                  onTap: () {},
+              return GestureDetector(
+                onTap: () {
+                  Get.toNamed(RoutesConst.orderDetail, arguments: order);
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -363,10 +368,12 @@ class OrderManagerPage extends GetView<OrderManagerController> {
             itemCount: controller.finishOrders.length,
             itemBuilder: (context, index) {
               OrderModel order = controller.finishOrders[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: GestureDetector(
-                  onTap: () {},
+              return GestureDetector(
+                onTap: () {
+                  Get.toNamed(RoutesConst.orderDetail, arguments: order);
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(

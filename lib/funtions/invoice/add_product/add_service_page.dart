@@ -48,7 +48,7 @@ class AddServicePage extends GetView<NewInvoiceController> {
                                 leading: Text(
                                     controller.amountService[index].toString()),
                                 trailing: IconButton(
-                                  icon: Icon(Icons.delete_outline_outlined),
+                                  icon: const Icon(Icons.delete_outline_outlined),
                                   onPressed: () {
                                     controller.selectedServices.removeAt(index);
                                     controller.amountService.removeAt(index);

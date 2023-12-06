@@ -32,7 +32,7 @@ class WarehousePage extends GetView<WarehouseController> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.3),
+                    color: Colors.grey.withOpacity(03),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Obx(() => controller.image.value != null

@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:pet_care/bindings/all_binding.dart';
-import 'package:pet_care/funtions/cart/cart_page.dart';
 import 'package:pet_care/funtions/customer/customer_detail/customer_detail_page.dart';
 import 'package:pet_care/funtions/customer/customer_page.dart';
 import 'package:pet_care/funtions/dashboard/dashboard_page.dart';
@@ -13,6 +12,7 @@ import 'package:pet_care/funtions/invoice/add_product/add_service_page.dart';
 import 'package:pet_care/funtions/invoice/detail/invoice_detail_page.dart';
 import 'package:pet_care/funtions/invoice/invoice_page.dart';
 import 'package:pet_care/funtions/invoice/new_invoice/new_invoice_page.dart';
+import 'package:pet_care/funtions/order_manager/order_detail/order_detail_page.dart';
 import 'package:pet_care/funtions/order_manager/order_manager_page.dart';
 import 'package:pet_care/funtions/product_manager/new_product/new_product_page.dart';
 import 'package:pet_care/funtions/product_manager/product_detail/product_detail_page.dart';
@@ -120,11 +120,7 @@ class Routes {
         page: () => const AddServicePage(),
         transition: Transition.rightToLeft,
         binding: AllBinding()),
-    GetPage(
-        name: RoutesConst.cart,
-        page: () => const CartPage(),
-        transition: Transition.rightToLeft,
-        binding: AllBinding()),
+
     GetPage(
         name: RoutesConst.productDetail,
         page: () => const ProductDetailPage(),
@@ -190,6 +186,11 @@ class Routes {
     GetPage(
         name: RoutesConst.customerDetail,
         page: () => CustomerDetailPage(customer: Get.arguments),
+        transition: Transition.rightToLeft,
+        binding: AllBinding()),
+    GetPage(
+        name: RoutesConst.orderDetail,
+        page: () => OrderDetailPage(),
         transition: Transition.rightToLeft,
         binding: AllBinding()),
   ];
